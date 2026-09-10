@@ -350,6 +350,33 @@ button { font-family: inherit; }
   font-size: 16px; flex-shrink: 0;
 }
 
+/* narration */
+.narration-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid var(--orange);
+  background: var(--white);
+  color: var(--orange-dark);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: all 0.15s ease;
+}
+.narration-btn:hover { background: #FBF2EC; }
+.narration-btn.playing { background: var(--orange); color: var(--white); }
+.narration-btn .ico { display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; }
+.narration-btn .bars { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+.narration-btn .bars span { display: block; width: 2.5px; background: currentColor; border-radius: 1px; animation: none; }
+.narration-btn.playing .bars span { animation: eq 0.9s ease-in-out infinite; }
+.narration-btn .bars span:nth-child(1) { height: 5px; animation-delay: 0s; }
+.narration-btn .bars span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.narration-btn .bars span:nth-child(3) { height: 7px; animation-delay: 0.3s; }
+@keyframes eq { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.4); } }
+
 /* nav arrows */
 .step-nav { display: flex; justify-content: space-between; margin-top: 34px; }
 .step-nav button {
@@ -426,6 +453,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel active" data-panel="1">
     <div>
       <div class="step-num">1</div>
+      <button class="narration-btn" data-audio="1" onclick="toggleNarration(1, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio1" src="audio/panel1.mp3" preload="none"></audio>
       <h3>Talk or Type. Get an Estimate.</h3>
       <p class="desc">Describe the job out loud or type it in plain English. QuickEstimate's AI checks real labor and material rates for that zip code and builds a full scope of work, timeline, and cost — in seconds.</p>
       <div class="why-matters"><b>Why it matters:</b> no more napkin math in the driveway. A defensible, professional number in the time it takes to describe the job.</div>
@@ -453,6 +486,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel" data-panel="2">
     <div>
       <div class="step-num">2</div>
+      <button class="narration-btn" data-audio="2" onclick="toggleNarration(2, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio2" src="audio/panel2.mp3" preload="none"></audio>
       <h3>Add Your Client — Once.</h3>
       <p class="desc">Save each client's name, email, phone, and address a single time. Every proposal, invoice, and message auto-fills correctly from there on.</p>
       <div class="why-matters"><b>Why it matters:</b> no more retyping the same client details into three different documents for the same job.</div>
@@ -482,6 +521,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel" data-panel="3">
     <div>
       <div class="step-num">3</div>
+      <button class="narration-btn" data-audio="3" onclick="toggleNarration(3, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio3" src="audio/panel3.mp3" preload="none"></audio>
       <h3>One Hub for the Whole Job.</h3>
       <p class="desc">Every project rolls up its estimates, proposals, invoices, and payment status into a single view — total quoted, billed, paid, and outstanding, updated automatically.</p>
       <div class="why-matters"><b>Why it matters:</b> no spreadsheet, no separate invoicing app. You never lose track of where a job's money stands.</div>
@@ -513,6 +558,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel" data-panel="4">
     <div>
       <div class="step-num">4</div>
+      <button class="narration-btn" data-audio="4" onclick="toggleNarration(4, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio4" src="audio/panel4.mp3" preload="none"></audio>
       <h3>Send a Proposal. Get It Signed.</h3>
       <p class="desc">One click turns the estimate into a branded proposal, emailed to the client with a link to review and sign online — no printing, no chasing down a signature.</p>
       <div class="why-matters"><b>Why it matters:</b> clients approve from their phone in the driveway. The job moves to "Signed" the same day it's sent.</div>
@@ -547,6 +598,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel" data-panel="5">
     <div>
       <div class="step-num">5</div>
+      <button class="narration-btn" data-audio="5" onclick="toggleNarration(5, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio5" src="audio/panel5.mp3" preload="none"></audio>
       <h3>Bill It Your Way.</h3>
       <p class="desc">Create an invoice straight from the signed proposal and decide how much to bill — a percentage of the job, like a 30% deposit, or an exact dollar amount. QuickEstimate tracks what's still outstanding for you.</p>
       <div class="why-matters"><b>Why it matters:</b> deposit up front, milestone halfway, balance on completion — however you structure payment, with no manual math or separate invoicing tool.</div>
@@ -576,6 +633,12 @@ a.btn:hover { background: var(--navy2); }
   <div class="panel" data-panel="6">
     <div>
       <div class="step-num">6</div>
+      <button class="narration-btn" data-audio="6" onclick="toggleNarration(6, this)">
+        <span class="ico play-ico">▶</span>
+        <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+        <span class="label">Play narration</span>
+      </button>
+      <audio id="audio6" src="audio/panel6.mp3" preload="none"></audio>
       <h3>The Client Pays. You Get Notified.</h3>
       <p class="desc">Every invoice includes a secure pay link. The client pays by card, and the payment posts straight to the project — outstanding drops, paid goes up, automatically.</p>
       <div class="why-matters"><b>Why it matters:</b> no waiting on a check in the mail, no manually reconciling a payment processor against a spreadsheet.</div>
@@ -644,7 +707,50 @@ labels.forEach((label, i) => {
 let current = 1;
 const total = 6;
 
+function resetNarrationButton(n) {
+  const btn = document.querySelector('.narration-btn[data-audio="' + n + '"]');
+  if (!btn) return;
+  btn.classList.remove('playing');
+  btn.querySelector('.play-ico').style.display = '';
+  btn.querySelector('.bars').style.display = 'none';
+  btn.querySelector('.label').textContent = 'Play narration';
+}
+
+function stopAllNarration(exceptN) {
+  for (let i = 1; i <= total; i++) {
+    if (i === exceptN) continue;
+    const audio = document.getElementById('audio' + i);
+    if (audio && !audio.paused) audio.pause();
+    resetNarrationButton(i);
+  }
+}
+
+function toggleNarration(n, btn) {
+  const audio = document.getElementById('audio' + n);
+  if (!audio) return;
+  if (audio.paused) {
+    stopAllNarration(n);
+    audio.play();
+    btn.classList.add('playing');
+    btn.querySelector('.play-ico').style.display = 'none';
+    btn.querySelector('.bars').style.display = '';
+    btn.querySelector('.label').textContent = 'Playing…';
+  } else {
+    audio.pause();
+    resetNarrationButton(n);
+  }
+}
+
+// Reset a panel's button once its clip finishes playing
+for (let i = 1; i <= 6; i++) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('audio' + i);
+    if (audio) audio.addEventListener('ended', () => resetNarrationButton(i));
+  });
+}
+
 function showPanel(n) {
+  stopAllNarration(0);
   current = Math.max(1, Math.min(total, n));
   document.querySelectorAll('.panel').forEach(p => {
     p.classList.toggle('active', Number(p.dataset.panel) === current);
