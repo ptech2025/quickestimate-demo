@@ -48,9 +48,13 @@ h1, h2, .hero-mark .word { font-family: 'Bricolage Grotesque', Arial, sans-serif
 .hero h1 { font-size: clamp(28px, 4.6vw, 44px); margin: 12px 0 14px; font-weight: 800; line-height: 1.15; }
 .hero p.sub { font-size: 16px; color: var(--tint); max-width: 620px; margin: 0 auto; line-height: 1.6; }
 
-.cards-wrap { max-width: 940px; margin: -80px auto 0; padding: 0 24px 64px; position: relative; z-index: 2; }
-.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.cards-wrap { max-width: 1320px; margin: -80px auto 0; padding: 0 24px 64px; position: relative; z-index: 2; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 980px) { .cards { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } }
+.card.hd-card a.btn { background: #F96302; }
+.card.hd-card a.btn:hover { background: #CC5000; }
+.card.hd-card .badge { background: #FFF1E8; color: #CC5000; }
 .card {
   background: var(--white);
   border: 1px solid var(--line);
@@ -97,8 +101,8 @@ h1, h2, .hero-mark .word { font-family: 'Bricolage Grotesque', Arial, sans-serif
     <div class="word">QuickEstimate<span class="ai">.ai</span></div>
   </div>
   <div class="kicker">Product Demonstrations</div>
-  <h1>Two ways to see QuickEstimate in action</h1>
-  <p class="sub">Click through the full estimate-to-paid workflow yourself, or watch a short narrated video tour. Both use sample data — nothing here is a real client.</p>
+  <h1>Three ways to see QuickEstimate in action</h1>
+  <p class="sub">Click through the full estimate-to-paid workflow yourself, watch a short narrated video tour, or explore a concept for integrating with The Home Depot Pro experience. All use sample data — nothing here is a real client.</p>
 </div>
 
 <div class="cards-wrap">
@@ -116,6 +120,13 @@ h1, h2, .hero-mark .word { font-family: 'Bricolage Grotesque', Arial, sans-serif
       <p>Watch a narrated video tour of the full estimate-to-paid workflow: talk-or-type estimating, saving a client, sending a proposal for e-signature, billing by percent or amount, and getting paid.</p>
       <div class="meta">About 2 minutes · has voice, sound on</div>
       <a class="btn" href="narrated/">Watch Narrated Demo &rarr;</a>
+    </div>
+    <div class="card hd-card">
+      <div class="badge">Interactive Concept</div>
+      <h3>Home Depot Pro Integration Concept</h3>
+      <p>See how QuickEstimate could connect a complete job estimate with product selection, Pro pricing, customer approval, ordering, fulfillment, repeat purchases and project reconciliation.</p>
+      <div class="meta">Interactive Concept &middot; Approximately 4&ndash;5 Minutes</div>
+      <a class="btn" href="homedepot/">Explore the Pro Integration &rarr;</a>
     </div>
   </div>
 </div>
