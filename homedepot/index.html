@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QuickEstimate × Home Depot Pro — Integration Concept</title>
-<meta name="description" content="A proposed integration concept showing how QuickEstimate could connect the contractor-to-customer estimating workflow with Home Depot Pro material selection, pricing, ordering, fulfillment, and purchase history. Illustrative only — no live Home Depot connection.">
+<meta name="description" content="A proposed integration concept showing the Home Depot Pro member's buying experience — estimate to materials to Pro pricing to payment — plus the Pro's own customer billing and project admin tools. Illustrative only — no live Home Depot connection.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -90,7 +90,7 @@ button { font-family: inherit; }
   padding: 5px 12px; border-radius: 999px;
 }
 .hd-hero h1 { font-size: clamp(22px, 3.4vw, 32px); margin: 12px 0 8px; font-weight: 800; line-height: 1.2; max-width: 760px; margin-inline: auto; }
-.hd-hero p.sub { font-size: 14.5px; color: var(--tint); max-width: 620px; margin: 0 auto; line-height: 1.6; }
+.hd-hero p.sub { font-size: 14.5px; color: var(--tint); max-width: 640px; margin: 0 auto; line-height: 1.6; }
 .back-link {
   display: inline-flex; align-items: center; gap: 6px; margin-top: 16px;
   color: var(--tint); text-decoration: none; font-size: 13px; font-weight: 600; opacity: 0.85;
@@ -107,39 +107,25 @@ button { font-family: inherit; }
 }
 .scenario-strip b { color: var(--navy); }
 
-/* ---------- PROGRESS / CONTROLS ---------- */
+/* ---------- TAB NAVIGATION ---------- */
 .hd-nav-wrap {
   position: sticky; top: 0; z-index: 40;
   background: var(--white);
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
-.hd-controls-row {
-  max-width: 1180px; margin: 0 auto; padding: 12px 20px;
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+.hd-tab-groups {
+  max-width: 1180px; margin: 0 auto; padding: 14px 20px;
+  display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-start;
 }
-.hd-controls-row .step-count { font-size: 12.5px; color: var(--gray); font-weight: 700; white-space: nowrap; }
-.hd-progress {
-  flex: 1;
-  display: flex; gap: 5px; overflow-x: auto; padding: 4px 2px;
-  scrollbar-width: thin;
+.hd-tab-group { display: flex; flex-direction: column; gap: 8px; }
+.hd-tab-group-label {
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--hd-orange-dark);
 }
-.hd-dot {
-  flex-shrink: 0;
-  width: 26px; height: 26px; border-radius: 50%;
-  border: 1.5px solid var(--line);
-  background: var(--white);
-  color: var(--gray-light);
-  font-size: 10.5px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.hd-dot:hover { border-color: var(--hd-orange); color: var(--hd-orange-dark); }
-.hd-dot.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
-.hd-dot.done { background: var(--tint); border-color: #C9D3EC; color: var(--navy); }
-.hd-btn-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.hd-icon-btn {
+.hd-tab-group.admin .hd-tab-group-label { color: var(--gray); }
+.hd-tab-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.hd-maintab-btn {
   border: 1.5px solid var(--line);
   background: var(--white);
   color: var(--navy);
@@ -148,34 +134,66 @@ button { font-family: inherit; }
   padding: 10px 16px;
   border-radius: 999px;
   cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
   white-space: nowrap;
 }
-.hd-icon-btn:hover { border-color: var(--hd-orange); }
-.hd-icon-btn:disabled { opacity: 0.35; cursor: default; }
-.hd-icon-btn.primary { background: var(--navy); border-color: var(--navy); color: var(--white); }
-.hd-icon-btn.primary:hover { background: var(--navy2); }
-.hd-icon-btn.on { background: var(--hd-orange-bg); border-color: var(--hd-orange); color: var(--hd-orange-dark); }
+.hd-maintab-btn:hover { border-color: var(--hd-orange); }
+.hd-maintab-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.hd-tab-group.admin .hd-maintab-btn.active { background: var(--gray); border-color: var(--gray); }
+.hd-tab-divider { width: 1px; align-self: stretch; background: var(--line); margin: 4px 0; }
+@media (max-width: 760px) { .hd-tab-divider { display: none; } }
 
-/* ---------- SCENE LAYOUT ---------- */
-.hd-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; }
-.scene { display: none; }
-.scene.active { display: block; animation: scenein 0.35s ease; }
+/* ---------- TAB PANEL LAYOUT ---------- */
+.hd-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+.tabpanel { display: none; }
+.tabpanel.active { display: block; animation: scenein 0.35s ease; }
 @keyframes scenein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.scene-kicker {
+.tabpanel-kicker {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase;
   color: var(--hd-orange-dark);
   margin-bottom: 10px;
 }
-.scene-kicker .step-badge {
+.tabpanel-kicker .tab-badge {
   background: var(--hd-orange); color: var(--white);
   width: 22px; height: 22px; border-radius: 50%;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 800;
 }
-.scene h2 { font-size: clamp(21px, 2.8vw, 28px); font-weight: 800; color: var(--navy); margin: 0 0 12px; line-height: 1.25; }
-.scene .lede { color: var(--gray); font-size: 15px; line-height: 1.65; max-width: 760px; margin: 0 0 20px; }
+.tabpanel.admin .tabpanel-kicker { color: var(--gray); }
+.tabpanel.admin .tabpanel-kicker .tab-badge { background: var(--gray); }
+.tabpanel h2 { font-size: clamp(21px, 2.8vw, 28px); font-weight: 800; color: var(--navy); margin: 0 0 12px; line-height: 1.25; }
+.tabpanel .lede { color: var(--gray); font-size: 15px; line-height: 1.65; max-width: 780px; margin: 0 0 8px; }
+
+/* narration button (matches interactive/ demo) */
+.narration-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hd-orange-bg); color: var(--hd-orange-dark);
+  border: 1px solid #F4CBA8; border-radius: 999px;
+  font-size: 12.5px; font-weight: 700; padding: 8px 14px; margin-bottom: 20px;
+  cursor: pointer;
+}
+.narration-btn:hover { background: #FBE3D3; }
+.narration-btn.playing { background: var(--hd-orange); color: var(--white); border-color: var(--hd-orange); }
+.narration-btn .ico { display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; }
+.narration-btn .bars { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+.narration-btn .bars span { display: block; width: 2.5px; background: currentColor; border-radius: 1px; animation: none; }
+.narration-btn.playing .bars span { animation: eq 0.9s ease-in-out infinite; }
+.narration-btn .bars span:nth-child(1) { height: 5px; animation-delay: 0s; }
+.narration-btn .bars span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.narration-btn .bars span:nth-child(3) { height: 7px; animation-delay: 0.3s; }
+@keyframes eq { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.4); } }
+
+/* sub-sections stacked within one tab */
+.subsec { margin-top: 0; }
+.subsec + .subsec { margin-top: 34px; padding-top: 28px; border-top: 1px dashed var(--line); }
+.subsec-kicker {
+  font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--hd-orange-dark); margin-bottom: 8px;
+}
+.tabpanel.admin .subsec-kicker { color: var(--gray); }
+.subsec h3 { font-size: 18.5px; font-weight: 800; color: var(--navy); margin: 0 0 12px; line-height: 1.3; }
+.subsec .sub-lede { color: var(--gray); font-size: 14px; line-height: 1.6; max-width: 760px; margin: 0 0 16px; }
+
 .illus-note {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--hd-orange-bg); color: var(--hd-orange-dark);
@@ -276,7 +294,7 @@ button { font-family: inherit; }
 .gbb-summary .item { font-size: 12.5px; color: var(--navy); }
 .gbb-summary .item b { display: block; font-size: 16px; font-family: 'Bricolage Grotesque', Arial, sans-serif; }
 
-/* fulfillment cards */
+/* fulfillment / payment choice cards */
 .hd-choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 18px; }
 .hd-choice-card {
   border: 2px solid var(--line); border-radius: 12px; padding: 16px; cursor: pointer; background: var(--white); transition: all 0.15s ease;
@@ -336,27 +354,11 @@ button { font-family: inherit; }
 }
 .cta-row2 { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
 
-/* caption bar */
-.caption-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
-  background: rgba(17,35,88,0.96); color: var(--white);
-  padding: 12px 20px; font-size: 13.5px; line-height: 1.5;
-  display: none; align-items: center; gap: 12px;
-  box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
-}
-.caption-bar.show { display: flex; }
-.caption-bar .speak-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--hd-orange); flex-shrink: 0; }
-.caption-bar.speaking .speak-dot { animation: pulse 0.8s ease-in-out infinite; }
-@keyframes pulse { 0%,100% { opacity: 0.4; transform: scale(0.8);} 50% { opacity: 1; transform: scale(1.2);} }
-.caption-bar .cap-text { flex: 1; max-width: 1100px; margin: 0 auto; }
-.caption-bar .cap-close { background: none; border: none; color: var(--gray-light); cursor: pointer; font-size: 16px; flex-shrink: 0; }
-
-.footnote { text-align: center; color: var(--gray-light); font-size: 12.5px; padding: 26px 24px 90px; letter-spacing: 0.2px; }
+.footnote { text-align: center; color: var(--gray-light); font-size: 12.5px; padding: 26px 24px 60px; letter-spacing: 0.2px; }
 .footnote strong { color: var(--gray); }
 
 @media (max-width: 600px) {
-  .hd-controls-row { padding: 10px 14px; }
-  .hd-icon-btn span.lbl { display: none; }
+  .hd-tab-groups { padding: 12px 14px; }
 }
 </style>
 </head>
@@ -374,7 +376,7 @@ button { font-family: inherit; }
     <span class="hd-chip">Home Depot Pro Integration Concept</span>
   </div>
   <h1>Home Depot helps the Pro price and fulfill the materials. QuickEstimate helps the Pro price and manage the entire job.</h1>
-  <p class="sub">A proposed concept connecting scope of work, labor, materials, customer approval, Pro purchasing, fulfillment, and project reconciliation into one experience.</p>
+  <p class="sub">A proposed concept for the Home Depot Pro member's buying experience — estimate, materials, pricing, and payment to Home Depot — with the Pro's own customer billing and project admin tools alongside it.</p>
   <a class="back-link" href="../">&larr; Back to QuickEstimate Demos</a>
 </div>
 
@@ -386,653 +388,780 @@ button { font-family: inherit; }
 </div>
 
 <div class="hd-nav-wrap">
-  <div class="hd-controls-row">
-    <div class="step-count" id="stepCount">Step 1 of 18</div>
-    <div class="hd-progress" id="hdProgress" role="tablist" aria-label="Jump to a step"></div>
-    <div class="hd-btn-group">
-      <button class="hd-icon-btn" id="prevBtn" onclick="hdGo(-1)" aria-label="Previous step">&larr; <span class="lbl">Prev</span></button>
-      <button class="hd-icon-btn primary" id="nextBtn" onclick="hdGo(1)" aria-label="Next step"><span class="lbl">Next</span> &rarr;</button>
-      <button class="hd-icon-btn" id="autoBtn" onclick="toggleAutoplay()" aria-label="Toggle automatic guided play">&#9654; <span class="lbl">Auto-Play</span></button>
-      <button class="hd-icon-btn" id="muteBtn" onclick="toggleMute()" aria-label="Toggle narration sound">&#128266; <span class="lbl">Sound On</span></button>
+  <div class="hd-tab-groups">
+    <div class="hd-tab-group">
+      <div class="hd-tab-group-label">Home Depot Purchase Flow</div>
+      <div class="hd-tab-btns">
+        <button class="hd-maintab-btn active" data-tab="1" onclick="showTab(1)">1 &middot; Estimate &amp; Connect</button>
+        <button class="hd-maintab-btn" data-tab="2" onclick="showTab(2)">2 &middot; Materials &amp; Pricing</button>
+        <button class="hd-maintab-btn" data-tab="3" onclick="showTab(3)">3 &middot; Order &amp; Pay</button>
+      </div>
+    </div>
+    <div class="hd-tab-divider"></div>
+    <div class="hd-tab-group admin">
+      <div class="hd-tab-group-label">Pro Admin &middot; Optional</div>
+      <div class="hd-tab-btns">
+        <button class="hd-maintab-btn" data-tab="4" onclick="showTab(4)">4 &middot; Customer Billing</button>
+        <button class="hd-maintab-btn" data-tab="5" onclick="showTab(5)">5 &middot; Track &amp; Reorder</button>
+        <button class="hd-maintab-btn" data-tab="6" onclick="showTab(6)">6 &middot; Returns &amp; Value</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="hd-wrap" id="scenesWrap">
+<div class="hd-wrap" id="tabsWrap">
 
-<!-- SCENE 0: COVER -->
-<section class="scene active" data-scene="0" data-caption="Welcome to a proposed integration concept. Home Depot helps the Pro price and fulfill the materials. QuickEstimate helps the Pro price and manage the entire job. This walkthrough follows one continuous project — Canterbury Home Services, working for customer Jordan Blake, on a bathroom remodel in Midtown Atlanta. Everything you see is illustrative. There is no live Home Depot connection.">
-  <div class="scene-kicker"><span class="step-badge">&#9733;</span> Overview</div>
-  <h2>One connected experience, from customer request to completed project.</h2>
-  <p class="lede">This concept follows a single project from first estimate through material selection, Pro pricing, customer approval, ordering, delivery, reconciliation, and reordering — all inside QuickEstimate.</p>
-  <div class="illus-note">&#9432; Proposed integration concept. All products, prices, availability, and rewards shown are illustrative — nothing here is a live Home Depot connection.</div>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Project Overview</span></div>
-    <div class="hd-frame-body">
-      <div class="stat-row">
-        <div class="stat-tile"><div class="k">Contractor</div><div class="v" style="font-size:16px;">Canterbury Home Services</div></div>
-        <div class="stat-tile"><div class="k">Customer</div><div class="v" style="font-size:16px;">Jordan Blake</div></div>
-        <div class="stat-tile"><div class="k">Project</div><div class="v" style="font-size:16px;">Bathroom Remodel</div><div class="sub">Midtown Atlanta</div></div>
-        <div class="stat-tile"><div class="k">Customer Budget</div><div class="v">$6,500</div><div class="sub">Target: 2 weeks</div></div>
-      </div>
-      <p style="font-size:13.5px;color:var(--gray);line-height:1.7;margin:14px 0 0;">Use the numbered steps above, the Next button, or Auto-Play to move through all 18 moments of this concept — from the first estimate to a fully reconciled, reordered project.</p>
-    </div>
-  </div>
-</section>
+<!-- ============ TAB 1 — ESTIMATE & CONNECT ============ -->
+<section class="tabpanel active" data-tab="1">
+  <div class="tabpanel-kicker"><span class="tab-badge">1</span> Estimate &amp; Connect</div>
+  <h2>Turn a Job Description Into a Connected Estimate</h2>
+  <p class="lede">Everything starts with one description of the job — and one connected Pro account.</p>
+  <button class="narration-btn" data-audio="1" onclick="toggleNarration(1, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio1" src="audio/tab1.mp3" preload="none"></audio>
 
-<!-- SCENE 1: STEP 1 -->
-<section class="scene" data-scene="1" data-caption="Every contractor knows the drill. A homeowner wants a quote, and you're doing math on a napkin. Canterbury Home Services describes the job once: a bathroom remodel in Midtown Atlanta, replacing 110 square feet of floor tile, installing a new vanity and faucet, finishing within two weeks, close to a 6,500 dollar customer budget. QuickEstimate builds a complete job estimate — not just a shopping basket — including scope of work, labor, materials, contractor overhead, markup, and estimated profit.">
-  <div class="scene-kicker"><span class="step-badge">1</span> Create the Estimate</div>
-  <h2>Describe the Job. Estimate the Entire Project.</h2>
-  <p class="lede">QuickEstimate estimates the entire job — not only the materials basket.</p>
-  <div class="two-col">
-    <div>
-      <div class="hd-frame" style="margin-bottom:16px;">
-        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Ask AI</span></div>
-        <div class="hd-frame-body" style="min-height:auto;">
-          <div style="background:var(--navy);color:var(--white);border-radius:14px 14px 4px 14px;padding:12px 15px;font-size:13.5px;line-height:1.5;">
-            "Bathroom remodel in Midtown Atlanta. Replace 110 square feet of floor tile, install a new vanity and faucet, complete within two weeks, and keep the project close to a $6,500 customer budget."
-          </div>
-        </div>
-      </div>
-      <div class="callout"><b>Why it matters:</b> one description becomes a complete, defensible job estimate — scope, labor, materials, overhead, markup, and profit — not just a list of things to buy.</div>
-      <div class="illus-note">&#9432; AI-generated scope, quantities and pricing require contractor review.</div>
-    </div>
-    <div class="hd-frame">
-      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Complete Job Estimate &middot; Midtown Bathroom Remodel</span></div>
-      <div class="hd-frame-body">
-        <div class="hd-table-wrap">
-          <table class="hd-table">
-            <tr><td>Materials</td><td class="num">$2,040.00</td></tr>
-            <tr><td>Labor</td><td class="num">$2,220.00</td></tr>
-            <tr><td>Contractor Overhead <span style="color:var(--gray-light);font-weight:500;">(8%)</span></td><td class="num">$410.00</td></tr>
-            <tr><td>Markup <span style="color:var(--gray-light);font-weight:500;">(10%)</span></td><td class="num">$467.00</td></tr>
-            <tr><td>Estimated Profit</td><td class="num">$1,088.00</td></tr>
-            <tr style="background:var(--tint);"><td style="font-weight:800;color:var(--navy);">Customer Price</td><td class="num" style="font-size:16px;">$6,225.00</td></tr>
-          </table>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--gray);margin-top:14px;">
-          <span>Project timeline: <b style="color:var(--navy);">2 weeks</b></span>
-          <span>Customer budget: <b style="color:var(--navy);">$6,500</b></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 2: STEP 2 -->
-<section class="scene" data-scene="2" data-caption="Next, QuickEstimate conceptually connects this project to the contractor's Home Depot Pro Xtra account, enabling personalized Pro pricing, purchase history, delivery to the project location, and rewards attribution — all using illustrative data, with no live Home Depot account connected.">
-  <div class="scene-kicker"><span class="step-badge">2</span> Connect Pro Xtra</div>
-  <h2>Connect the Estimate to the Pro Purchasing Experience</h2>
-  <p class="lede">A conceptual connection between QuickEstimate and a Home Depot Pro Xtra account.</p>
-  <div class="hd-frame" style="max-width:640px;">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Pro Xtra Connection</span></div>
-    <div class="hd-frame-body">
-      <div id="proDisconnected">
-        <p style="font-size:13.5px;color:var(--gray);margin:0 0 16px;">Connect Canterbury Home Services' Pro Xtra account to bring personalized pricing and purchase history into this project.</p>
-        <button class="btn btn-orange" onclick="connectProXtra()">Connect Pro Xtra Account</button>
-      </div>
-      <div id="proConnected" style="display:none;">
-        <div class="confirm-banner show" style="margin-top:0;margin-bottom:16px;">&#10003; Pro Xtra account connected (illustrative)</div>
-        <div class="hd-table-wrap">
-          <table class="hd-table">
-            <tr><td>Pro Xtra Member</td><td class="num" style="color:var(--green);">Canterbury Home Services</td></tr>
-            <tr><td>Preferred Store</td><td class="num">Midtown Atlanta</td></tr>
-            <tr><td>Personalized Pro Pricing</td><td class="num"><span class="pill pill-green">Available</span></td></tr>
-            <tr><td>Purchase History</td><td class="num"><span class="pill pill-green">Enabled</span></td></tr>
-            <tr><td>Project Delivery Location</td><td class="num"><span class="pill pill-green">Connected</span></td></tr>
-            <tr><td>Rewards Attribution</td><td class="num"><span class="pill pill-green">Enabled</span></td></tr>
-          </table>
-        </div>
-      </div>
-      <div class="illus-note" style="margin-top:16px;margin-bottom:0;">&#9432; Conceptual connection using illustrative data. No live Home Depot account is connected.</div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 3: STEP 3 -->
-<section class="scene" data-scene="3" data-caption="QuickEstimate converts the job scope into a structured list of project materials — matching each requirement to an illustrative Home Depot product, with recommended purchase quantities, waste allowance, pricing, and store availability. The contractor can review, replace, or remove any suggested item before proceeding.">
-  <div class="scene-kicker"><span class="step-badge">3</span> Scope to Materials</div>
-  <h2>From Scope of Work to Project-Ready Materials</h2>
-  <p class="lede">18 project requirements matched to available product options.</p>
-  <div class="hd-table-wrap">
-    <table class="hd-table" id="materialsTable">
-      <thead><tr>
-        <th>Requirement</th><th>Illustrative Product Match</th><th>Req. Qty</th><th>Buy Qty</th><th>Unit Price</th><th>Ext. Price</th><th>Store</th><th>Fulfillment</th><th></th>
-      </tr></thead>
-      <tbody id="materialsBody"></tbody>
-    </table>
-  </div>
-  <div class="illus-note" style="margin-top:14px;margin-bottom:0;">&#9432; Products, quantities, pricing, and availability shown are illustrative examples only.</div>
-  <div class="confirm-banner" id="matConfirm">&#10003; Item updated. Material list recalculated.</div>
-</section>
-
-<!-- SCENE 4: STEP 4 -->
-<section class="scene" data-scene="4" data-caption="QuickEstimate turns the material list into three customer-facing packages — Good, Better, and Best — each updating the material cost, customer price, contractor margin, and availability automatically. Better is recommended by default, and the customer can switch at any time.">
-  <div class="scene-kicker"><span class="step-badge">4</span> Good, Better, Best</div>
-  <h2>Turn Product Choices into Customer Choices</h2>
-  <p class="lede">Select a package to see the project update automatically.</p>
-  <div class="gbb-grid" id="gbbGrid">
-    <div class="gbb-card" data-tier="good" onclick="selectGBB('good')">
-      <div class="gbb-check">&#10003;</div>
-      <div class="gbb-tag">Good &middot; Value</div>
-      <h4>Functional &amp; Budget-Conscious</h4>
-      <div class="gbb-price">$5,890</div>
-      <div class="gbb-mat">Material total: $1,720</div>
-      <ul><li>Standard ceramic tile</li><li>Builder-grade vanity</li><li>Standard fixtures</li></ul>
-    </div>
-    <div class="gbb-card selected" data-tier="better" onclick="selectGBB('better')">
-      <div class="gbb-check">&#10003;</div>
-      <div class="gbb-tag">Better &middot; Recommended</div>
-      <h4>Improved Durability &amp; Finish</h4>
-      <div class="gbb-price">$6,225</div>
-      <div class="gbb-mat">Material total: $2,040</div>
-      <ul><li>Porcelain tile, wider selection</li><li>Upgraded vanity &amp; faucet</li><li>Better warranty coverage</li></ul>
-    </div>
-    <div class="gbb-card" data-tier="best" onclick="selectGBB('best')">
-      <div class="gbb-check">&#10003;</div>
-      <div class="gbb-tag">Best &middot; Premium</div>
-      <h4>Premium Materials &amp; Finishes</h4>
-      <div class="gbb-price">$6,850</div>
-      <div class="gbb-mat">Material total: $2,480</div>
-      <ul><li>Premium porcelain / natural-look tile</li><li>Designer vanity &amp; fixtures</li><li>Extended warranty category</li></ul>
-    </div>
-  </div>
-  <div class="gbb-summary">
-    <div class="item">Selected Package<b id="gbbSelName">Better — Recommended</b></div>
-    <div class="item">Material Cost<b id="gbbMat">$2,040.00</b></div>
-    <div class="item">Customer Price<b id="gbbPrice">$6,225.00</b></div>
-    <div class="item">Contractor Margin<b id="gbbMargin">$1,555.00</b></div>
-    <div class="item">Availability<b id="gbbAvail" style="color:var(--green);">In Stock</b></div>
-  </div>
-  <div class="hd-table-wrap">
-    <table class="hd-table">
-      <thead><tr><th></th><th>Cost</th><th>Durability</th><th>Appearance</th><th>Availability</th><th>Warranty</th></tr></thead>
-      <tbody>
-        <tr><td style="font-weight:700;color:var(--navy);">Good</td><td>Lowest</td><td>Standard</td><td>Basic</td><td>In stock</td><td>Standard</td></tr>
-        <tr><td style="font-weight:700;color:var(--navy);">Better</td><td>Moderate</td><td>Improved</td><td>Upgraded</td><td>In stock</td><td>Extended</td></tr>
-        <tr><td style="font-weight:700;color:var(--navy);">Best</td><td>Highest</td><td>Premium</td><td>Designer</td><td>2–3 day lead</td><td>Premium</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- SCENE 5: STEP 5 -->
-<section class="scene" data-scene="5" data-caption="Before the proposal goes out, QuickEstimate identifies purchasing opportunities — personalized Pro pricing, volume pricing, promotions, and Pro Xtra rewards progress — updating the material total and project margin. All amounts and rewards shown are illustrative.">
-  <div class="scene-kicker"><span class="step-badge">5</span> Pro Pricing</div>
-  <h2>Make Every Pro Purchase Count</h2>
-  <p class="lede">QuickEstimate identifies purchasing opportunities before the contractor finalizes the customer proposal.</p>
-  <div class="hd-frame" style="max-width:640px;">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Illustrative Pro Purchase Summary &middot; Better Package</span></div>
-    <div class="hd-frame-body">
-      <div class="hd-table-wrap">
-        <table class="hd-table">
-          <tr><td>Standard Merchandise Total</td><td class="num">$2,040.00</td></tr>
-          <tr><td>Personalized Pro Pricing <span style="color:var(--green);font-weight:700;">(-6%)</span></td><td class="num" style="color:var(--green);">&minus;$122.40</td></tr>
-          <tr><td>Volume Pricing <span style="color:var(--gray-light);font-weight:500;">(tile, 4+ boxes)</span></td><td class="num" style="color:var(--green);">&minus;$18.00</td></tr>
-          <tr><td>Eligible Promotional Savings</td><td class="num" style="color:var(--green);">&minus;$25.00</td></tr>
-          <tr><td>Delivery Charge</td><td class="num">+$65.00</td></tr>
-          <tr style="background:var(--tint);"><td style="font-weight:800;color:var(--navy);">Revised Material Total</td><td class="num" style="font-size:15px;">$1,939.60</td></tr>
-          <tr><td>Revised Project Margin</td><td class="num" style="color:var(--green);">$1,655.40</td></tr>
-        </table>
-      </div>
-      <div class="stat-tile" style="margin-top:14px;">
-        <div class="k">Pro Xtra Rewards Progress</div>
-        <div class="v orange" style="font-size:16px;">+194 points toward next reward tier</div>
-        <div class="sub">Illustrative — actual rewards determined by Home Depot</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 6: STEP 6 -->
-<section class="scene" data-scene="6" data-caption="QuickEstimate plans fulfillment across pickup and delivery options, flags one special-order item, suggests a substitute to protect the schedule, and lets the contractor schedule job-site delivery to match the project timeline.">
-  <div class="scene-kicker"><span class="step-badge">6</span> Pickup &amp; Delivery</div>
-  <h2>Get Materials Where and When the Pro Needs Them</h2>
-  <p class="lede">Choose a fulfillment plan for the Blake bathroom remodel.</p>
-  <div class="hd-choice-grid" id="fulfillGrid">
-    <div class="hd-choice-card" data-opt="pickup" onclick="selectFulfill('pickup')"><div class="ico">&#127974;</div><h5>Pick Up at Preferred Store</h5><p>Midtown Atlanta &middot; ready today</p></div>
-    <div class="hd-choice-card" data-opt="sameday" onclick="selectFulfill('sameday')"><div class="ico">&#9889;</div><h5>Same-Day Delivery</h5><p>Illustrative window: 2–6 PM today</p></div>
-    <div class="hd-choice-card" data-opt="nextday" onclick="selectFulfill('nextday')"><div class="ico">&#128666;</div><h5>Next-Day Job-Site Delivery</h5><p>Arrives tomorrow morning</p></div>
-    <div class="hd-choice-card selected" data-opt="scheduled" onclick="selectFulfill('scheduled')"><div class="ico">&#128197;</div><h5>Scheduled Job-Site Delivery</h5><p>Aligned to the project timeline</p></div>
-  </div>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Intelligent Fulfillment Plan</span></div>
-    <div class="hd-frame-body">
-      <div class="hd-table-wrap">
-        <table class="hd-table">
-          <tr><td>16 of 18 items</td><td class="num"><span class="pill pill-green">Available — Midtown Atlanta</span></td></tr>
-          <tr><td>1 item</td><td class="num"><span class="pill pill-blue">Available — Buckhead location</span></td></tr>
-          <tr><td>1 item (designer faucet)</td><td class="num"><span class="pill pill-amber">Special Order — 5–7 days</span></td></tr>
-          <tr><td>Suggested substitute available</td><td class="num"><span class="pill pill-orange">Keeps schedule on track</span></td></tr>
-        </table>
-      </div>
-      <p style="font-size:12.5px;color:var(--gray);margin:14px 0 0;">Delivery location: <b style="color:var(--navy);">Midtown Atlanta project site (general area)</b> &middot; Estimated readiness: <b style="color:var(--navy);">Monday, ahead of demolition</b></p>
-      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-        <button class="btn btn-outline" onclick="hdBannerToast('splitFulfillBanner')">Split Fulfillment</button>
-        <button class="btn btn-outline" onclick="hdBannerToast('combineFulfillBanner')">Combine With Scheduled Delivery</button>
-      </div>
-      <div class="confirm-banner" id="splitFulfillBanner">&#10003; Order split — in-stock items ship now, the special-order faucet follows separately.</div>
-      <div class="confirm-banner" id="combineFulfillBanner">&#10003; Combined with Thursday's scheduled delivery to reduce delivery charges.</div>
-    </div>
-  </div>
-</section>
-
-<section class="scene" data-scene="7" data-caption="The estimate becomes a customer-facing proposal. Jordan Blake can compare Good, Better, and Best directly inside the proposal, then approve and sign electronically — the same proposal and e-signature experience QuickEstimate already provides, now carrying the connected material and pricing detail forward.">
-  <div class="scene-kicker"><span class="step-badge">7</span> Customer Proposal &amp; Approval</div>
-  <h2>One Proposal, Signed Electronically — Now Connected to Real Materials</h2>
-  <p class="lede">Jordan Blake reviews the proposal for the Midtown Atlanta bathroom remodel and chooses a package before signing.</p>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Proposal — Canterbury Home Services</span></div>
-    <div class="hd-frame-body">
-      <div class="gbb-grid" id="propGrid" style="margin-bottom:14px;">
-        <div class="gbb-card" data-tier="good" onclick="selectProposalTier('good')">
-          <div class="gbb-tag">Good</div><h4>Value</h4>
-          <div class="gbb-price">$5,890.00</div>
-          <div class="gbb-mat">Standard tile &amp; fixtures</div>
-        </div>
-        <div class="gbb-card selected" data-tier="better" onclick="selectProposalTier('better')">
-          <div class="gbb-check">&#10003;</div>
-          <div class="gbb-tag">Better &middot; Recommended</div><h4>Balanced</h4>
-          <div class="gbb-price">$6,225.00</div>
-          <div class="gbb-mat">Upgraded tile &amp; vanity</div>
-        </div>
-        <div class="gbb-card" data-tier="best" onclick="selectProposalTier('best')">
-          <div class="gbb-tag">Best</div><h4>Premium</h4>
-          <div class="gbb-price">$6,850.00</div>
-          <div class="gbb-mat">Premium finishes throughout</div>
-        </div>
-      </div>
-      <div class="stat-row">
-        <div class="stat-tile"><div class="k">Selected Package</div><div class="v" id="propTierName">Better &middot; Recommended</div></div>
-        <div class="stat-tile"><div class="k">Customer Price</div><div class="v" id="propPrice">$6,225.00</div></div>
-        <div class="stat-tile"><div class="k">Estimated Timeline</div><div class="v">2 Weeks</div></div>
-      </div>
-      <div id="propUnsigned">
-        <p style="font-size:13px;color:var(--gray);margin:14px 0;">By signing electronically, Jordan Blake approves this proposal and the selected package. No purchase is submitted to Home Depot at this step.</p>
-        <button class="btn btn-navy" onclick="signProposal()">Sign Electronically &#9998;</button>
-      </div>
-      <div id="propSigned" style="display:none;">
-        <div class="confirm-banner show" style="position:static;margin-top:14px;">&#10003; Customer approved. Materials are ready for contractor review and ordering.</div>
-        <p style="font-size:12px;color:var(--gray-light);margin-top:10px;">Signed electronically by Jordan Blake &middot; Illustrative signature &mdash; no legal document is created in this concept demonstration.</p>
-      </div>
-    </div>
-  </div>
-  <div class="illus-note">Illustrative proposal figures. This step reuses QuickEstimate's existing proposal and e-signature experience — it is not a new payment or contract flow.</div>
-</section>
-
-<section class="scene" data-scene="8" data-caption="Before anything is purchased, the contractor reviews every detail — products, quantities, Pro pricing, fulfillment, and totals — and decides when to proceed. This concept demonstration does not submit a real order to Home Depot, and no payment information is collected.">
-  <div class="scene-kicker"><span class="step-badge">8</span> Contractor Order Review</div>
-  <h2>The Contractor Reviews Everything Before Anything Is Purchased</h2>
-  <p class="lede">Canterbury Home Services confirms the order details for the Blake bathroom remodel.</p>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Order Review — Not Yet Submitted</span></div>
-    <div class="hd-frame-body">
-      <div class="hd-table-wrap">
-        <table class="hd-table">
-          <tr><td>Project</td><td class="num">Blake Bathroom Remodel &middot; Midtown Atlanta</td></tr>
-          <tr><td>Customer</td><td class="num">Jordan Blake</td></tr>
-          <tr><td>Package</td><td class="num">Better &middot; Recommended</td></tr>
-          <tr><td>Products / Line Items</td><td class="num">11 items, 17 units</td></tr>
-          <tr><td>Pro Pricing Applied</td><td class="num"><span class="pill pill-green">Yes &middot; Illustrative</span></td></tr>
-          <tr><td>Pickup / Delivery</td><td class="num">Scheduled Job-Site Delivery</td></tr>
-          <tr><td>Estimated Arrival</td><td class="num">Monday, ahead of demolition</td></tr>
-          <tr><td>PO / Job Number</td><td class="num">CHS-1042-BLK</td></tr>
-          <tr><td>Pro Xtra Attribution</td><td class="num">Canterbury Home Services &middot; Illustrative Account</td></tr>
-          <tr><td>Payment Method</td><td class="num"><span class="pill pill-gray">On File &middot; Placeholder Only</span></td></tr>
-          <tr><td><b>Merchandise Total</b></td><td class="num"><b>$1,939.60</b></td></tr>
-        </table>
-      </div>
-      <div id="orderPending" style="margin-top:16px;">
-        <button class="btn btn-orange" onclick="placeOrder()">Place Home Depot Order</button>
-      </div>
-      <div id="orderPlaced" style="display:none;margin-top:16px;">
-        <div class="callout"><b>Concept Demonstration:</b> In a live integration, the contractor-approved order would now be submitted securely to The Home Depot.</div>
-        <div class="hd-frame" style="margin-top:14px;background:var(--tint);">
-          <div class="hd-frame-body">
-            <div class="stat-row">
-              <div class="stat-tile"><div class="k">Order Status</div><div class="v green">Confirmed (Illustrative)</div></div>
-              <div class="stat-tile"><div class="k">PO Number</div><div class="v">CHS-1042-BLK</div></div>
-              <div class="stat-tile"><div class="k">Estimated Arrival</div><div class="v">Monday</div></div>
+  <div class="subsec">
+    <div class="subsec-kicker">Step 1</div>
+    <h3>Create the Estimate</h3>
+    <div class="two-col">
+      <div>
+        <div class="hd-frame" style="margin-bottom:16px;">
+          <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Ask AI</span></div>
+          <div class="hd-frame-body" style="min-height:auto;">
+            <div style="background:var(--navy);color:var(--white);border-radius:14px 14px 4px 14px;padding:12px 15px;font-size:13.5px;line-height:1.5;">
+              "Bathroom remodel in Midtown Atlanta. Replace 110 square feet of floor tile, install a new vanity and faucet, complete within two weeks, and keep the project close to a $6,500 customer budget."
             </div>
-            <p style="font-size:12.5px;color:var(--gray);margin-top:4px;">No real transaction was processed and no payment information was collected in this concept demonstration.</p>
           </div>
         </div>
+        <div class="callout"><b>Why it matters:</b> one description becomes a complete, defensible job estimate — scope, labor, materials, overhead, markup, and profit — not just a list of things to buy.</div>
+        <div class="illus-note">&#9432; AI-generated scope, quantities and pricing require contractor review.</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="scene" data-scene="9" data-caption="Once ordered, materials are tracked against the project's real schedule. When an item runs into a delay, QuickEstimate can suggest an approved substitute and prepare a customer notification — instead of leaving the contractor to discover the problem on-site.">
-  <div class="scene-kicker"><span class="step-badge">9</span> Delivery &amp; Project Tracking</div>
-  <h2>Materials Tracked Against the Real Project Schedule</h2>
-  <p class="lede">Illustrative delivery and project dashboard for the Blake bathroom remodel.</p>
-  <div class="two-col">
-    <div class="hd-frame">
-      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Delivery Status</span></div>
-      <div class="hd-frame-body">
-        <div class="hd-timeline">
-          <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Order Confirmed</div><div class="tl-sub">Illustrative &middot; Friday</div></div></div>
-          <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Preparing</div><div class="tl-sub">Midtown Atlanta location</div></div></div>
-          <div class="tl-row"><div class="tl-dot active">&#8226;</div><div class="tl-body"><div class="tl-title">Out for Delivery</div><div class="tl-sub">Window: Monday, 8 AM – 12 PM</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Delivered</div><div class="tl-sub">Job site, Midtown Atlanta</div></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="hd-frame">
-      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Project Schedule</span></div>
-      <div class="hd-frame-body">
-        <div class="hd-timeline" style="font-size:12.5px;">
-          <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Materials Delivered</div><div class="tl-sub">Monday</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Demolition</div><div class="tl-sub">Tuesday</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Floor Prep</div><div class="tl-sub">Wednesday</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Tile Install</div><div class="tl-sub">Thursday – Friday</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Vanity Install</div><div class="tl-sub">Following Monday</div></div></div>
-          <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Final Inspection</div><div class="tl-sub">Following Wednesday</div></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="hd-frame" style="margin-top:18px;">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Delayed Item Scenario</span></div>
-    <div class="hd-frame-body" id="delayScenario">
-      <button class="btn btn-outline" onclick="runDelayScenario()">Show Delayed-Item Scenario</button>
-      <div id="delaySteps" style="display:none;margin-top:14px;">
-        <p style="font-size:13px;color:var(--red);font-weight:700;margin:0 0 8px;">&#9888; Designer faucet delayed — new estimated arrival pushes past the vanity install date.</p>
-        <p style="font-size:13px;color:var(--ink);margin:0 0 8px;">Suggested substitute: <b>In-Stock Comparable Faucet</b> &middot; available for Monday delivery &middot; keeps the schedule on track.</p>
-        <p style="font-size:13px;color:var(--gray);margin:0 0 12px;">Revised delivery date if substitute is accepted: <b style="color:var(--navy);">Monday (on schedule)</b>. If declined, vanity install would move to the following Wednesday.</p>
-        <button class="btn btn-navy" onclick="hdBannerToast('notifyBanner')">Prepare Customer Notification for Approval</button>
-        <div class="confirm-banner" id="notifyBanner">&#10003; Notification prepared for Jordan Blake — awaiting customer approval before the substitute is applied.</div>
-      </div>
-    </div>
-  </div>
-  <div class="illus-note">Illustrative statuses and dates. QuickEstimate does not contact any supplier directly; this is a proposed concept for coordinating illustrative Home Depot status against the contractor's project schedule.</div>
-</section>
-
-<section class="scene" data-scene="10" data-caption="After the project wraps, QuickEstimate reconciles what was purchased against what was estimated — automatically, with digital receipts attached and Pro Xtra purchases connected to the job. No manual receipt entry. Every purchase remains connected to the project.">
-  <div class="scene-kicker"><span class="step-badge">10</span> Reconciliation &amp; Profitability</div>
-  <h2>What Was Estimated vs. What Was Actually Purchased</h2>
-  <p class="lede">Purchase reconciliation for the Blake bathroom remodel, illustrative figures.</p>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Reconciliation Summary</span></div>
-    <div class="hd-frame-body">
-      <div class="hd-table-wrap">
-        <table class="hd-table">
-          <tr><td>Estimated Material Cost</td><td class="num">$2,040.00</td></tr>
-          <tr><td>Actual Purchase Cost</td><td class="num">$1,985.00</td></tr>
-          <tr><td>Difference</td><td class="num"><span class="pill pill-green">Favorable $55.00</span></td></tr>
-          <tr><td>Approved Change Orders</td><td class="num">1 &middot; $492.25</td></tr>
-          <tr><td>Returned Materials</td><td class="num">2 items &middot; Pending</td></tr>
-          <tr><td>Refund Credits</td><td class="num">Illustrative &middot; Not Yet Applied</td></tr>
-          <tr><td>Final Labor Cost</td><td class="num">$2,220.00</td></tr>
-          <tr><td><b>Updated Contractor Margin</b></td><td class="num"><b>$1,420.00</b></td></tr>
-          <tr><td>Digital Receipt Attached</td><td class="num"><span class="pill pill-blue">Automatic</span></td></tr>
-          <tr><td>Pro Xtra Purchase Attributed</td><td class="num"><span class="pill pill-green">Yes</span></td></tr>
-          <tr><td><b>Project Profitability</b></td><td class="num"><b style="color:var(--green);">On Target</b></td></tr>
-        </table>
-      </div>
-      <p style="font-size:12.5px;color:var(--gray);margin-top:14px;">No manual receipt entry. Every purchase remains connected to the project.</p>
-    </div>
-  </div>
-</section>
-
-<section class="scene" data-scene="11" data-caption="Between projects, the Pro doesn't start over. Buy Again lets Canterbury Home Services reorder anything already purchased — by tapping a product, or simply asking for what's needed — without creating a new customer proposal.">
-  <div class="scene-kicker"><span class="step-badge">11</span> Buy Again</div>
-  <h2>Reordering Is a Tap or a Sentence Away</h2>
-  <p class="lede">Canterbury Home Services can reorder anything already purchased through QuickEstimate — no new customer proposal required.</p>
-  <div class="hd-tabs" id="buyAgainTabs">
-    <button class="hd-tab-btn active" data-tab="buyagain" onclick="setBuyTab('buyagain')">Buy Again</button>
-    <button class="hd-tab-btn" data-tab="recent" onclick="setBuyTab('recent')">Recent Purchases</button>
-    <button class="hd-tab-btn" data-tab="freq" onclick="setBuyTab('freq')">Frequently Purchased</button>
-    <button class="hd-tab-btn" data-tab="byproject" onclick="setBuyTab('byproject')">By Project</button>
-    <button class="hd-tab-btn" data-tab="essentials" onclick="setBuyTab('essentials')">Saved Essentials</button>
-  </div>
-  <div class="prod-grid" id="buyAgainGrid"></div>
-
-  <div class="hd-frame" style="margin-top:22px;">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Ask for What You Need</span></div>
-    <div class="hd-frame-body">
-      <div style="display:grid;gap:12px;">
-        <div class="hd-frame" style="background:var(--tint);">
-          <div class="hd-frame-body" style="padding:14px 16px;">
-            <p style="margin:0 0 8px;font-size:13px;color:var(--gray);">&#128172; &ldquo;Order two more boxes of the tile used for the Blake bathroom.&rdquo;</p>
-            <button class="btn btn-outline" onclick="runVoiceExample(1)">Run This Example</button>
-            <div class="confirm-banner" id="voiceEx1">&#10003; Matched to Porcelain Tile 12&quot; x 24&quot; from the Blake project &middot; 2 boxes added &middot; $116.00 &middot; ready for pickup or delivery.</div>
-          </div>
-        </div>
-        <div class="hd-frame" style="background:var(--tint);">
-          <div class="hd-frame-body" style="padding:14px 16px;">
-            <p style="margin:0 0 8px;font-size:13px;color:var(--gray);">&#128172; &ldquo;I need caulk, painter's tape and contractor bags for tomorrow.&rdquo;</p>
-            <button class="btn btn-outline" onclick="runVoiceExample(2)">Run This Example</button>
-            <div class="confirm-banner" id="voiceEx2">&#10003; 3 items matched from purchase history &middot; $35.73 &middot; scheduled for same-day pickup, ready tomorrow morning.</div>
-          </div>
-        </div>
-      </div>
-      <p class="illus-note" style="margin-top:14px;">Illustrative natural-language matching. No purchase is submitted automatically — the contractor reviews and confirms fulfillment (pickup, same-day delivery, or added to a scheduled delivery) before anything ships.</p>
-    </div>
-  </div>
-</section>
-
-<section class="scene" data-scene="12" data-caption="Every material tied to the Blake project lives in one place — what was purchased, what was installed, what's left over, and what was returned. No more searching through receipts or trying to remember which product was used.">
-  <div class="scene-kicker"><span class="step-badge">12</span> Project Purchase History</div>
-  <h2>Every Purchase, Still Connected to the Project</h2>
-  <p class="lede">Complete purchase history for the Blake bathroom remodel.</p>
-  <div class="hd-tabs" id="historyTabs">
-    <button class="hd-tab-btn active" data-f="all" onclick="setHistFilter('all')">All</button>
-    <button class="hd-tab-btn" data-f="installed" onclick="setHistFilter('installed')">Installed</button>
-    <button class="hd-tab-btn" data-f="unused" onclick="setHistFilter('unused')">Unused</button>
-    <button class="hd-tab-btn" data-f="returned" onclick="setHistFilter('returned')">Returned</button>
-    <button class="hd-tab-btn" data-f="inventory" onclick="setHistFilter('inventory')">Kept in Inventory</button>
-    <button class="hd-tab-btn" data-f="reordered" onclick="setHistFilter('reordered')">Reordered</button>
-  </div>
-  <div class="hd-table-wrap">
-    <table class="hd-table">
-      <thead><tr><th>Product</th><th>Qty Purchased</th><th>Qty Used</th><th>Cost</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody id="historyBody"></tbody>
-    </table>
-  </div>
-  <p style="font-size:12.5px;color:var(--gray);margin-top:14px;">No more searching through receipts or trying to remember which product was used.</p>
-</section>
-
-<section class="scene" data-scene="13" data-caption="Projects change. When Jordan Blake asked for 40 additional square feet of tile, QuickEstimate calculated the added material and labor cost, applied the contractor's standard markup, and sent a change order for approval — before any material was purchased.">
-  <div class="scene-kicker"><span class="step-badge">13</span> Change Order &amp; Reorder</div>
-  <h2>When the Scope Changes, the Numbers Change With It</h2>
-  <p class="lede">Jordan Blake requests 40 additional square feet of tile and two more bags of thinset.</p>
-  <div class="hd-frame">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Change Order Calculation</span></div>
-    <div class="hd-frame-body">
-      <div class="hd-table-wrap">
-        <table class="hd-table">
-          <tr><td>Additional Tile (3 boxes, ~40 sq ft)</td><td class="num">$174.00</td></tr>
-          <tr><td>Additional Thinset (2 bags)</td><td class="num">$33.50</td></tr>
-          <tr><td>Additional Material Subtotal</td><td class="num">$207.50</td></tr>
-          <tr><td>Additional Labor (40 sq ft)</td><td class="num">$240.00</td></tr>
-          <tr><td>Subtotal Before Markup</td><td class="num">$447.50</td></tr>
-          <tr><td>Contractor Markup (10%)</td><td class="num">$44.75</td></tr>
-          <tr><td><b>Change Order Total</b></td><td class="num"><b>$492.25</b></td></tr>
-        </table>
-      </div>
-      <div id="coPending" style="margin-top:16px;">
-        <button class="btn btn-navy" onclick="sendChangeOrder()">Send Change Order to Customer</button>
-      </div>
-      <div id="coSent" style="display:none;margin-top:16px;">
-        <p style="font-size:13px;color:var(--gray);margin:0 0 10px;">Change order sent to Jordan Blake for approval.</p>
-        <button class="btn btn-orange" onclick="approveChangeOrder()">Approve Change Order (Customer View)</button>
-      </div>
-      <div id="coApproved" style="display:none;margin-top:16px;">
-        <div class="confirm-banner show" style="position:static;">&#10003; Change approved. Additional materials are ready for contractor review.</div>
-      </div>
-    </div>
-  </div>
-  <div class="illus-note">Illustrative pricing. The change order follows the same estimate-and-approval logic as the original proposal, now extended to mid-project scope changes.</div>
-</section>
-
-<section class="scene" data-scene="14" data-caption="Every project ends with some materials left over. QuickEstimate helps the contractor decide what to do with each one — return it, keep it, transfer it to another project, or hold it for warranty — including moving leftover tile from the Blake project straight into the Carter project's inventory.">
-  <div class="scene-kicker"><span class="step-badge">14</span> Unused Materials</div>
-  <h2>Leftover Materials Don't Have to Sit in a Truck</h2>
-  <p class="lede">Reconciling what's left over from the Blake bathroom remodel.</p>
-  <div class="hd-table-wrap">
-    <table class="hd-table" id="unusedTable">
-      <thead><tr><th>Item</th><th>Qty Remaining</th><th>Value</th><th>Action</th></tr></thead>
-      <tbody>
-        <tr><td>Porcelain Tile 12&quot; x 24&quot;</td><td>3 boxes</td><td class="num">$174.00</td><td><span class="pill pill-gray" id="unusedTag0">Not Yet Marked</span></td></tr>
-        <tr><td>Modified Thinset Mortar</td><td>1 bag</td><td class="num">$16.75</td><td><span class="pill pill-gray" id="unusedTag1">Not Yet Marked</span></td></tr>
-        <tr><td>Sanded Grout</td><td>1 container</td><td class="num">$22.00</td><td><span class="pill pill-gray" id="unusedTag2">Not Yet Marked</span></td></tr>
-        <tr><td>Braided Supply Connectors</td><td>2 units</td><td class="num">$8.50</td><td><span class="pill pill-gray" id="unusedTag3">Not Yet Marked</span></td></tr>
-        <tr><td>Custom-Cut Tile Trim (non-returnable)</td><td>1 piece</td><td class="num">$0.00</td><td><span class="pill pill-gray" id="unusedTag4">Not Eligible for Return</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-    <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Prepare for Return')">Prepare for Return</button>
-    <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Kept in Inventory')">Keep in Inventory</button>
-    <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Transferred')">Transfer to Another Project</button>
-    <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Retained for Warranty')">Retain for Warranty</button>
-  </div>
-  <p class="illus-note">Select a row's item above, then choose an action — each of the four choices is available for every returnable item.</p>
-
-  <div class="hd-frame" style="margin-top:22px;">
-    <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Transfer Example — Blake &rarr; Carter Project</span></div>
-    <div class="hd-frame-body">
-      <p style="font-size:13px;color:var(--gray);margin:0 0 14px;">The Carter project (a separate customer) needs 4 boxes of the same tile. Canterbury Home Services already has 3 leftover boxes from the Blake project.</p>
-      <div class="stat-row">
-        <div class="stat-tile"><div class="k">Blake Project — Unused Tile Value</div><div class="v" id="blakeUnusedVal">$174.00</div></div>
-        <div class="stat-tile"><div class="k">Carter Project — Inventory Value</div><div class="v" id="carterInvVal">$0.00</div></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
-        <button class="btn btn-navy" onclick="transferTile('buyone')">Transfer and Buy One</button>
-        <button class="btn btn-outline" onclick="transferTile('keep')">Keep in Inventory</button>
-        <button class="btn btn-outline" onclick="transferTile('return')">Prepare Return</button>
-      </div>
-      <div class="confirm-banner" id="transferBanner"></div>
-    </div>
-  </div>
-</section>
-
-<section class="scene" data-scene="15" data-caption="For anything that truly needs to go back, QuickEstimate assists the process — matching items to the original purchase and receipt, and preparing a return summary. Home Depot's own policies and systems still determine eligibility, method, value, and final acceptance.">
-  <div class="scene-kicker"><span class="step-badge">15</span> Prepare a Return</div>
-  <h2>An Assisted Return, Not an Automatic One</h2>
-  <p class="lede">Preparing a return for two unopened items from the Blake bathroom remodel.</p>
-  <div class="two-col">
-    <div class="hd-frame">
-      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Assisted Return Process</span></div>
-      <div class="hd-frame-body">
-        <ol style="margin:0;padding-left:20px;font-size:12.5px;color:var(--gray);line-height:1.85;">
-          <li>Identify unused or returnable materials from the project</li>
-          <li>Match each item to its original purchase</li>
-          <li>Locate the digital receipt and PO reference</li>
-          <li>Confirm item condition (unopened, unused)</li>
-          <li>Check illustrative return eligibility</li>
-          <li>Identify likely return method (in-store, locker, mail)</li>
-          <li>Estimate an illustrative credit value</li>
-          <li>Prepare a return summary for contractor review</li>
-          <li>Contractor confirms items and quantities</li>
-          <li>Return summary handed off to Home Depot's return process</li>
-          <li>Project reconciliation updates once the return completes</li>
-        </ol>
-      </div>
-    </div>
-    <div class="hd-frame">
-      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Return Summary</span></div>
-      <div class="hd-frame-body">
-        <div id="returnPending">
-          <p style="font-size:13px;color:var(--gray);margin:0 0 14px;">2 unopened items identified: 1 container of sanded grout, 2 plumbing connectors.</p>
-          <button class="btn btn-orange" onclick="prepareReturn()">Prepare Return</button>
-        </div>
-        <div id="returnDone" style="display:none;">
+      <div class="hd-frame">
+        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Complete Job Estimate &middot; Midtown Bathroom Remodel</span></div>
+        <div class="hd-frame-body">
           <div class="hd-table-wrap">
             <table class="hd-table">
-              <tr><td>Items</td><td class="num">2 Unopened Items</td></tr>
-              <tr><td>Matched Purchase</td><td class="num"><span class="pill pill-green">Found</span></td></tr>
-              <tr><td>Digital Receipt</td><td class="num"><span class="pill pill-green">Located</span></td></tr>
-              <tr><td>Illustrative Credit</td><td class="num">$30.50</td></tr>
-              <tr><td>Return Summary</td><td class="num"><span class="pill pill-blue">Prepared</span></td></tr>
-              <tr><td>Reconciliation</td><td class="num"><span class="pill pill-amber">Pending</span></td></tr>
+              <tr><td>Materials</td><td class="num">$2,040.00</td></tr>
+              <tr><td>Labor</td><td class="num">$2,220.00</td></tr>
+              <tr><td>Contractor Overhead <span style="color:var(--gray-light);font-weight:500;">(8%)</span></td><td class="num">$410.00</td></tr>
+              <tr><td>Markup <span style="color:var(--gray-light);font-weight:500;">(10%)</span></td><td class="num">$467.00</td></tr>
+              <tr><td>Estimated Profit</td><td class="num">$1,088.00</td></tr>
+              <tr style="background:var(--tint);"><td style="font-weight:800;color:var(--navy);">Customer Price</td><td class="num" style="font-size:16px;">$6,225.00</td></tr>
+            </table>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--gray);margin-top:14px;">
+            <span>Project timeline: <b style="color:var(--navy);">2 weeks</b></span>
+            <span>Customer budget: <b style="color:var(--navy);">$6,500</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 2</div>
+    <h3>Connect Pro Xtra</h3>
+    <p class="sub-lede">A conceptual connection between QuickEstimate and a Home Depot Pro Xtra account.</p>
+    <div class="hd-frame" style="max-width:640px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Pro Xtra Connection</span></div>
+      <div class="hd-frame-body">
+        <div id="proDisconnected">
+          <p style="font-size:13.5px;color:var(--gray);margin:0 0 16px;">Connect Canterbury Home Services' Pro Xtra account to bring personalized pricing and purchase history into this project.</p>
+          <button class="btn btn-orange" onclick="connectProXtra()">Connect Pro Xtra Account</button>
+        </div>
+        <div id="proConnected" style="display:none;">
+          <div class="confirm-banner show" style="margin-top:0;margin-bottom:16px;">&#10003; Pro Xtra account connected (illustrative)</div>
+          <div class="hd-table-wrap">
+            <table class="hd-table">
+              <tr><td>Pro Xtra Member</td><td class="num" style="color:var(--green);">Canterbury Home Services</td></tr>
+              <tr><td>Preferred Store</td><td class="num">Midtown Atlanta</td></tr>
+              <tr><td>Personalized Pro Pricing</td><td class="num"><span class="pill pill-green">Available</span></td></tr>
+              <tr><td>Purchase History</td><td class="num"><span class="pill pill-green">Enabled</span></td></tr>
+              <tr><td>Project Delivery Location</td><td class="num"><span class="pill pill-green">Connected</span></td></tr>
+              <tr><td>Rewards Attribution</td><td class="num"><span class="pill pill-green">Enabled</span></td></tr>
             </table>
           </div>
         </div>
-        <div class="callout" style="margin-top:16px;">Return eligibility, method, value and acceptance would be determined by The Home Depot's applicable policies and systems.</div>
+        <div class="illus-note" style="margin-top:16px;margin-bottom:0;">&#9432; Conceptual connection using illustrative data. No live Home Depot account is connected.</div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="scene" data-scene="16" data-caption="Before buying anything new, QuickEstimate can check what the contractor already owns. Canterbury Home Services already had three boxes of the required tile in company inventory — so QuickEstimate reduced the new order from four boxes to one.">
-  <div class="scene-kicker"><span class="step-badge">16</span> Pro Material Inventory</div>
-  <h2>Check the Truck and the Warehouse Before Ordering More</h2>
-  <p class="lede">Canterbury Home Services' illustrative on-hand material inventory.</p>
-  <div class="hd-table-wrap">
-    <table class="hd-table">
-      <thead><tr><th>Item</th><th>Qty On Hand</th><th>Origin Project</th><th>Condition</th><th>Value</th></tr></thead>
-      <tbody>
-        <tr><td>Porcelain Tile 12&quot; x 24&quot;</td><td>3 boxes</td><td>Blake Bathroom Remodel</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$174.00</td></tr>
-        <tr><td>Modified Thinset Mortar</td><td>1 bag</td><td>Blake Bathroom Remodel</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$16.75</td></tr>
-        <tr><td>Braided Supply Connectors</td><td>4 units</td><td>Multiple Projects</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$17.00</td></tr>
-        <tr><td>Screw &amp; Anchor Assortment</td><td>1 box</td><td>Multiple Projects</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$9.00</td></tr>
-      </tbody>
-    </table>
+<!-- ============ TAB 2 — MATERIALS & PRICING ============ -->
+<section class="tabpanel" data-tab="2">
+  <div class="tabpanel-kicker"><span class="tab-badge">2</span> Materials &amp; Pricing</div>
+  <h2>Match Materials, Price Them, Package Them</h2>
+  <p class="lede">The job scope becomes real Home Depot products — priced, packaged, and ready for the customer.</p>
+  <button class="narration-btn" data-audio="2" onclick="toggleNarration(2, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio2" src="audio/tab2.mp3" preload="none"></audio>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 3</div>
+    <h3>Scope to Materials</h3>
+    <p class="sub-lede">18 project requirements matched to available product options.</p>
+    <div class="hd-table-wrap">
+      <table class="hd-table" id="materialsTable">
+        <thead><tr>
+          <th>Requirement</th><th>Illustrative Product Match</th><th>Req. Qty</th><th>Buy Qty</th><th>Unit Price</th><th>Ext. Price</th><th>Store</th><th>Fulfillment</th><th></th>
+        </tr></thead>
+        <tbody id="materialsBody"></tbody>
+      </table>
+    </div>
+    <div class="illus-note" style="margin-top:14px;margin-bottom:0;">&#9432; Products, quantities, pricing, and availability shown are illustrative examples only.</div>
+    <div class="confirm-banner" id="matConfirm">&#10003; Item updated. Material list recalculated.</div>
   </div>
-  <div class="callout" style="margin-top:16px;">You already have three boxes of the required tile in company inventory. QuickEstimate reduced the new order from four boxes to one.</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-    <button class="btn btn-outline" onclick="hdBannerToast('invTransferBanner')">Transfer to New Project</button>
-    <button class="btn btn-navy" onclick="hdBannerToast('invBuyMoreBanner')">Buy More (1 Box)</button>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 4</div>
+    <h3>Good, Better, Best</h3>
+    <p class="sub-lede">Select a package to see the project update automatically.</p>
+    <div class="gbb-grid" id="gbbGrid">
+      <div class="gbb-card" data-tier="good" onclick="selectGBB('good')">
+        <div class="gbb-check">&#10003;</div>
+        <div class="gbb-tag">Good &middot; Value</div>
+        <h4>Functional &amp; Budget-Conscious</h4>
+        <div class="gbb-price">$5,890</div>
+        <div class="gbb-mat">Material total: $1,720</div>
+        <ul><li>Standard ceramic tile</li><li>Builder-grade vanity</li><li>Standard fixtures</li></ul>
+      </div>
+      <div class="gbb-card selected" data-tier="better" onclick="selectGBB('better')">
+        <div class="gbb-check">&#10003;</div>
+        <div class="gbb-tag">Better &middot; Recommended</div>
+        <h4>Improved Durability &amp; Finish</h4>
+        <div class="gbb-price">$6,225</div>
+        <div class="gbb-mat">Material total: $2,040</div>
+        <ul><li>Porcelain tile, wider selection</li><li>Upgraded vanity &amp; faucet</li><li>Better warranty coverage</li></ul>
+      </div>
+      <div class="gbb-card" data-tier="best" onclick="selectGBB('best')">
+        <div class="gbb-check">&#10003;</div>
+        <div class="gbb-tag">Best &middot; Premium</div>
+        <h4>Premium Materials &amp; Finishes</h4>
+        <div class="gbb-price">$6,850</div>
+        <div class="gbb-mat">Material total: $2,480</div>
+        <ul><li>Premium porcelain / natural-look tile</li><li>Designer vanity &amp; fixtures</li><li>Extended warranty category</li></ul>
+      </div>
+    </div>
+    <div class="gbb-summary">
+      <div class="item">Selected Package<b id="gbbSelName">Better — Recommended</b></div>
+      <div class="item">Material Cost<b id="gbbMat">$2,040.00</b></div>
+      <div class="item">Customer Price<b id="gbbPrice">$6,225.00</b></div>
+      <div class="item">Contractor Margin<b id="gbbMargin">$1,555.00</b></div>
+      <div class="item">Availability<b id="gbbAvail" style="color:var(--green);">In Stock</b></div>
+    </div>
+    <div class="hd-table-wrap">
+      <table class="hd-table">
+        <thead><tr><th></th><th>Cost</th><th>Durability</th><th>Appearance</th><th>Availability</th><th>Warranty</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;color:var(--navy);">Good</td><td>Lowest</td><td>Standard</td><td>Basic</td><td>In stock</td><td>Standard</td></tr>
+          <tr><td style="font-weight:700;color:var(--navy);">Better</td><td>Moderate</td><td>Improved</td><td>Upgraded</td><td>In stock</td><td>Extended</td></tr>
+          <tr><td style="font-weight:700;color:var(--navy);">Best</td><td>Highest</td><td>Premium</td><td>Designer</td><td>2–3 day lead</td><td>Premium</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="confirm-banner" id="invTransferBanner">&#10003; Tile transferred to the new project's material list.</div>
-  <div class="confirm-banner" id="invBuyMoreBanner">&#10003; 1 additional box added to the order — reduced from 4 boxes using existing inventory.</div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 5</div>
+    <h3>Apply Pro Pricing</h3>
+    <p class="sub-lede">QuickEstimate identifies purchasing opportunities before the contractor finalizes the customer proposal.</p>
+    <div class="hd-frame" style="max-width:640px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Illustrative Pro Purchase Summary &middot; Better Package</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Standard Merchandise Total</td><td class="num">$2,040.00</td></tr>
+            <tr><td>Personalized Pro Pricing <span style="color:var(--green);font-weight:700;">(-6%)</span></td><td class="num" style="color:var(--green);">&minus;$122.40</td></tr>
+            <tr><td>Volume Pricing <span style="color:var(--gray-light);font-weight:500;">(tile, 4+ boxes)</span></td><td class="num" style="color:var(--green);">&minus;$18.00</td></tr>
+            <tr><td>Eligible Promotional Savings</td><td class="num" style="color:var(--green);">&minus;$25.00</td></tr>
+            <tr><td>Delivery Charge</td><td class="num">+$65.00</td></tr>
+            <tr style="background:var(--tint);"><td style="font-weight:800;color:var(--navy);">Revised Material Total</td><td class="num" style="font-size:15px;">$1,939.60</td></tr>
+            <tr><td>Revised Project Margin</td><td class="num" style="color:var(--green);">$1,655.40</td></tr>
+          </table>
+        </div>
+        <div class="stat-tile" style="margin-top:14px;">
+          <div class="k">Pro Xtra Rewards Progress</div>
+          <div class="v orange" style="font-size:16px;">+194 points toward next reward tier</div>
+          <div class="sub">Illustrative — actual rewards determined by Home Depot</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="scene" data-scene="17" data-caption="Home Depot helps the Pro price and fulfill the materials. QuickEstimate helps the Pro price and manage the entire job. Together, they could connect the contractor's customer experience with Home Depot's Pro purchasing and fulfillment ecosystem.">
-  <div class="scene-kicker"><span class="step-badge">17</span> Final Value Summary</div>
-  <h2>What This Concept Could Mean for Everyone Involved</h2>
-  <p class="lede">Home Depot helps the Pro price and fulfill the materials. QuickEstimate helps the Pro price and manage the entire job.</p>
-  <div class="value-cols">
-    <div class="value-col">
-      <div class="vc-tag">For the Pro</div>
-      <ul>
-        <li>One connected view of estimate, materials, purchasing, and job status</li>
-        <li>Less time spent shopping, reconciling receipts, and tracking down orders</li>
-        <li>Fewer pricing mistakes and forgotten costs eating into margin</li>
-        <li>Faster reordering and change orders without starting over</li>
-        <li>Clear visibility into what's owned, used, returned, or available</li>
-      </ul>
+<!-- ============ TAB 3 — ORDER & PAY ============ -->
+<section class="tabpanel" data-tab="3">
+  <div class="tabpanel-kicker"><span class="tab-badge">3</span> Order &amp; Pay</div>
+  <h2>Review, Order, and Pay Home Depot</h2>
+  <p class="lede">The Pro chooses fulfillment, reviews the order, and pays Home Depot directly — using funds already collected from the customer.</p>
+  <button class="narration-btn" data-audio="3" onclick="toggleNarration(3, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio3" src="audio/tab3.mp3" preload="none"></audio>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 6</div>
+    <h3>Choose Pickup or Delivery</h3>
+    <p class="sub-lede">Choose a fulfillment plan for the Blake bathroom remodel.</p>
+    <div class="hd-choice-grid" id="fulfillGrid">
+      <div class="hd-choice-card" data-opt="pickup" onclick="selectFulfill('pickup')"><div class="ico">&#127974;</div><h5>Pick Up at Preferred Store</h5><p>Midtown Atlanta &middot; ready today</p></div>
+      <div class="hd-choice-card" data-opt="sameday" onclick="selectFulfill('sameday')"><div class="ico">&#9889;</div><h5>Same-Day Delivery</h5><p>Illustrative window: 2–6 PM today</p></div>
+      <div class="hd-choice-card" data-opt="nextday" onclick="selectFulfill('nextday')"><div class="ico">&#128666;</div><h5>Next-Day Job-Site Delivery</h5><p>Arrives tomorrow morning</p></div>
+      <div class="hd-choice-card selected" data-opt="scheduled" onclick="selectFulfill('scheduled')"><div class="ico">&#128197;</div><h5>Scheduled Job-Site Delivery</h5><p>Aligned to the project timeline</p></div>
     </div>
-    <div class="value-col">
-      <div class="vc-tag">For the Customer</div>
-      <ul>
-        <li>A clear, itemized proposal with real product detail, not vague line items</li>
-        <li>Confidence that pricing and materials are tied to an actual purchase plan</li>
-        <li>Faster answers when a delay or substitution comes up</li>
-        <li>Simple electronic approval for both the original scope and any changes</li>
-      </ul>
-    </div>
-    <div class="value-col">
-      <div class="vc-tag">For Home Depot</div>
-      <ul>
-        <li>Deeper Pro Xtra engagement across the life of a project, not just a single order</li>
-        <li>More attributed purchases, repeat purchases, and reorders</li>
-        <li>A stronger connection to the contractor's day-to-day workflow</li>
-        <li>A differentiated Pro experience built around the whole job, not just the cart</li>
-      </ul>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Intelligent Fulfillment Plan</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>16 of 18 items</td><td class="num"><span class="pill pill-green">Available — Midtown Atlanta</span></td></tr>
+            <tr><td>1 item</td><td class="num"><span class="pill pill-blue">Available — Buckhead location</span></td></tr>
+            <tr><td>1 item (designer faucet)</td><td class="num"><span class="pill pill-amber">Special Order — 5–7 days</span></td></tr>
+            <tr><td>Suggested substitute available</td><td class="num"><span class="pill pill-orange">Keeps schedule on track</span></td></tr>
+          </table>
+        </div>
+        <p style="font-size:12.5px;color:var(--gray);margin:14px 0 0;">Delivery location: <b style="color:var(--navy);">Midtown Atlanta project site (general area)</b> &middot; Estimated readiness: <b style="color:var(--navy);">Monday, ahead of demolition</b></p>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="hdBannerToast('splitFulfillBanner')">Split Fulfillment</button>
+          <button class="btn btn-outline" onclick="hdBannerToast('combineFulfillBanner')">Combine With Scheduled Delivery</button>
+        </div>
+        <div class="confirm-banner" id="splitFulfillBanner">&#10003; Order split — in-stock items ship now, the special-order faucet follows separately.</div>
+        <div class="confirm-banner" id="combineFulfillBanner">&#10003; Combined with Thursday's scheduled delivery to reduce delivery charges.</div>
+      </div>
     </div>
   </div>
-  <div class="closing-statement">
-    QuickEstimate can connect the contractor's customer experience with Home Depot's Pro purchasing and fulfillment ecosystem.
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 7</div>
+    <h3>Review the Order</h3>
+    <p class="sub-lede">Canterbury Home Services confirms the order details for the Blake bathroom remodel before anything is purchased.</p>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Order Review — Not Yet Submitted</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Project</td><td class="num">Blake Bathroom Remodel &middot; Midtown Atlanta</td></tr>
+            <tr><td>Package</td><td class="num">Better &middot; Recommended</td></tr>
+            <tr><td>Products / Line Items</td><td class="num">11 items, 17 units</td></tr>
+            <tr><td>Pro Pricing Applied</td><td class="num"><span class="pill pill-green">Yes &middot; Illustrative</span></td></tr>
+            <tr><td>Pickup / Delivery</td><td class="num">Scheduled Job-Site Delivery</td></tr>
+            <tr><td>Estimated Arrival</td><td class="num">Monday, ahead of demolition</td></tr>
+            <tr><td>PO / Job Number</td><td class="num">CHS-1042-BLK</td></tr>
+            <tr><td>Pro Xtra Attribution</td><td class="num">Canterbury Home Services &middot; Illustrative Account</td></tr>
+            <tr><td><b>Merchandise Total</b></td><td class="num"><b>$1,939.60</b></td></tr>
+          </table>
+        </div>
+        <div id="orderPending" style="margin-top:16px;">
+          <button class="btn btn-orange" onclick="placeOrder()">Place Home Depot Order</button>
+        </div>
+        <div id="orderPlaced" style="display:none;margin-top:16px;">
+          <div class="callout"><b>Concept Demonstration:</b> In a live integration, the contractor-approved order would now be submitted securely to The Home Depot.</div>
+          <div class="hd-frame" style="margin-top:14px;background:var(--tint);">
+            <div class="hd-frame-body">
+              <div class="stat-row">
+                <div class="stat-tile"><div class="k">Order Status</div><div class="v green">Confirmed (Illustrative)</div></div>
+                <div class="stat-tile"><div class="k">PO Number</div><div class="v">CHS-1042-BLK</div></div>
+                <div class="stat-tile"><div class="k">Estimated Arrival</div><div class="v">Monday</div></div>
+              </div>
+              <p style="font-size:12.5px;color:var(--gray);margin-top:4px;">No real transaction was processed in this concept demonstration.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="cta-row2">
-    <button class="btn btn-orange" onclick="hdBannerToast('cta1Banner')">Integrate QuickEstimate with the Home Depot Pro ecosystem</button>
-    <button class="btn btn-outline" onclick="hdBannerToast('cta2Banner')">Explore QuickEstimate as a strategic product capability</button>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Step 8 &middot; New</div>
+    <h3>Pay Home Depot</h3>
+    <p class="sub-lede">Using funds already collected from Jordan Blake (see Customer Billing), Canterbury Home Services pays Home Depot for the order.</p>
+    <div class="hd-choice-grid" id="payMethodGrid">
+      <div class="hd-choice-card selected" data-pay="proxtra" onclick="selectPayMethod('proxtra')"><div class="ico">&#128179;</div><h5>Pro Xtra Business Card</h5><p>Linked to the Pro Xtra account (illustrative)</p></div>
+      <div class="hd-choice-card" data-pay="creditline" onclick="selectPayMethod('creditline')"><div class="ico">&#127974;</div><h5>Home Depot Commercial Credit</h5><p>Illustrative commercial credit line</p></div>
+      <div class="hd-choice-card" data-pay="ach" onclick="selectPayMethod('ach')"><div class="ico">&#127974;</div><h5>ACH / Bank Transfer</h5><p>Illustrative bank transfer</p></div>
+    </div>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Payment to Home Depot</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Order Total (Merchandise)</td><td class="num">$1,939.60</td></tr>
+            <tr><td>Payment Method</td><td class="num" id="payMethodLabel">Pro Xtra Business Card</td></tr>
+          </table>
+        </div>
+        <div id="payPending" style="margin-top:16px;">
+          <button class="btn btn-orange" onclick="payHomeDepot()">Pay Home Depot</button>
+        </div>
+        <div id="payDone" style="display:none;margin-top:16px;">
+          <div class="confirm-banner show" style="position:static;">&#10003; Payment confirmed (illustrative) — $1,939.60 paid to Home Depot using funds already collected from Jordan Blake.</div>
+          <p style="font-size:12px;color:var(--gray-light);margin-top:10px;">No real payment method, card number, or transaction is involved in this concept demonstration.</p>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="confirm-banner" id="cta1Banner" style="justify-content:center;">&#10003; Thank you for exploring this concept. This is illustrative only — no integration currently exists.</div>
-  <div class="confirm-banner" id="cta2Banner" style="justify-content:center;">&#10003; Thank you for your interest. This concept is a proposed direction, not a committed roadmap item.</div>
-  <p class="illus-note" style="text-align:center;">This concept demonstration does not represent pricing, valuations, confidential data, or any contractual terms between Principium Technology and The Home Depot.</p>
 </section>
 
-</div>
+<!-- ============ TAB 4 — CUSTOMER BILLING (ADMIN) ============ -->
+<section class="tabpanel admin" data-tab="4">
+  <div class="tabpanel-kicker"><span class="tab-badge">4</span> Customer Billing &middot; Pro Admin</div>
+  <h2>Bill the Customer Before You Buy</h2>
+  <p class="lede">Handled by the Pro, separately from the Home Depot purchase flow: get the customer's sign-off, invoice them, and collect payment — the funds that pay for the order in Order &amp; Pay.</p>
+  <button class="narration-btn" data-audio="4" onclick="toggleNarration(4, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio4" src="audio/tab4.mp3" preload="none"></audio>
 
-<div class="caption-bar" id="captionBar">
-  <span class="speak-dot"></span>
-  <span class="cap-text" id="capText"></span>
-  <button class="cap-close" onclick="hideCaptions()" aria-label="Hide captions">&times;</button>
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Get Customer Approval</h3>
+    <p class="sub-lede">Jordan Blake reviews the proposal for the Midtown Atlanta bathroom remodel and chooses a package before signing.</p>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Proposal — Canterbury Home Services</span></div>
+      <div class="hd-frame-body">
+        <div class="gbb-grid" id="propGrid" style="margin-bottom:14px;">
+          <div class="gbb-card" data-tier="good" onclick="selectProposalTier('good')">
+            <div class="gbb-tag">Good</div><h4>Value</h4>
+            <div class="gbb-price">$5,890.00</div>
+            <div class="gbb-mat">Standard tile &amp; fixtures</div>
+          </div>
+          <div class="gbb-card selected" data-tier="better" onclick="selectProposalTier('better')">
+            <div class="gbb-check">&#10003;</div>
+            <div class="gbb-tag">Better &middot; Recommended</div><h4>Balanced</h4>
+            <div class="gbb-price">$6,225.00</div>
+            <div class="gbb-mat">Upgraded tile &amp; vanity</div>
+          </div>
+          <div class="gbb-card" data-tier="best" onclick="selectProposalTier('best')">
+            <div class="gbb-tag">Best</div><h4>Premium</h4>
+            <div class="gbb-price">$6,850.00</div>
+            <div class="gbb-mat">Premium finishes throughout</div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-tile"><div class="k">Selected Package</div><div class="v" id="propTierName">Better &middot; Recommended</div></div>
+          <div class="stat-tile"><div class="k">Customer Price</div><div class="v" id="propPrice">$6,225.00</div></div>
+          <div class="stat-tile"><div class="k">Estimated Timeline</div><div class="v">2 Weeks</div></div>
+        </div>
+        <div id="propUnsigned">
+          <p style="font-size:13px;color:var(--gray);margin:14px 0;">By signing electronically, Jordan Blake approves this proposal and the selected package.</p>
+          <button class="btn btn-navy" onclick="signProposal()">Sign Electronically &#9998;</button>
+        </div>
+        <div id="propSigned" style="display:none;">
+          <div class="confirm-banner show" style="position:static;margin-top:14px;">&#10003; Customer approved. Ready to invoice.</div>
+          <p style="font-size:12px;color:var(--gray-light);margin-top:10px;">Signed electronically by Jordan Blake &middot; Illustrative signature &mdash; no legal document is created in this concept demonstration.</p>
+        </div>
+      </div>
+    </div>
+    <div class="illus-note" style="margin-top:16px;">Illustrative proposal figures. This step reuses QuickEstimate's existing proposal and e-signature experience.</div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin &middot; New</div>
+    <h3>Invoice the Customer</h3>
+    <div class="hd-frame" style="max-width:640px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Invoice &middot; Canterbury Home Services &rarr; Jordan Blake</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Invoice Number</td><td class="num">INV-CHS-1042</td></tr>
+            <tr><td>Project</td><td class="num">Bathroom Remodel &middot; Midtown Atlanta</td></tr>
+            <tr><td>Package</td><td class="num">Better &middot; Recommended</td></tr>
+            <tr><td>Due Date</td><td class="num">Illustrative &middot; 15 days</td></tr>
+            <tr><td><b>Amount Due</b></td><td class="num"><b>$6,225.00</b></td></tr>
+          </table>
+        </div>
+        <div id="invPending" style="margin-top:16px;">
+          <button class="btn btn-navy" onclick="sendInvoice()">Send Invoice to Jordan Blake</button>
+        </div>
+        <div id="invSent" style="display:none;margin-top:16px;">
+          <div class="confirm-banner show" style="position:static;">&#10003; Invoice sent to Jordan Blake — awaiting payment.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin &middot; New</div>
+    <h3>Receive Customer Payment</h3>
+    <div class="hd-frame" style="max-width:640px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Customer Payment Status</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Invoice Number</td><td class="num">INV-CHS-1042</td></tr>
+            <tr><td>Amount</td><td class="num">$6,225.00</td></tr>
+            <tr><td>Payment Method</td><td class="num"><span class="pill pill-gray">Illustrative &middot; Card on File</span></td></tr>
+            <tr><td>Status</td><td class="num" id="custPayStatus"><span class="pill pill-amber">Awaiting Payment</span></td></tr>
+          </table>
+        </div>
+        <div id="custPayPending" style="margin-top:16px;">
+          <button class="btn btn-orange" onclick="recordCustomerPayment()">Record Customer Payment</button>
+        </div>
+        <div id="custPayDone" style="display:none;margin-top:16px;">
+          <div class="confirm-banner show" style="position:static;">&#10003; Payment received from Jordan Blake — $6,225.00. Funds are now available to place and pay for the Home Depot order.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 5 — TRACK & REORDER (ADMIN) ============ -->
+<section class="tabpanel admin" data-tab="5">
+  <div class="tabpanel-kicker"><span class="tab-badge">5</span> Track &amp; Reorder &middot; Pro Admin</div>
+  <h2>Track the Job, Then Keep It Moving</h2>
+  <p class="lede">Once materials are ordered, the Pro's admin tools track delivery, reconcile spend, and make reordering effortless.</p>
+  <button class="narration-btn" data-audio="5" onclick="toggleNarration(5, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio5" src="audio/tab5.mp3" preload="none"></audio>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Track Delivery &amp; Schedule</h3>
+    <p class="sub-lede">Illustrative delivery and project dashboard for the Blake bathroom remodel.</p>
+    <div class="two-col">
+      <div class="hd-frame">
+        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Delivery Status</span></div>
+        <div class="hd-frame-body">
+          <div class="hd-timeline">
+            <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Order Confirmed</div><div class="tl-sub">Illustrative &middot; Friday</div></div></div>
+            <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Preparing</div><div class="tl-sub">Midtown Atlanta location</div></div></div>
+            <div class="tl-row"><div class="tl-dot active">&#8226;</div><div class="tl-body"><div class="tl-title">Out for Delivery</div><div class="tl-sub">Window: Monday, 8 AM – 12 PM</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Delivered</div><div class="tl-sub">Job site, Midtown Atlanta</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hd-frame">
+        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Project Schedule</span></div>
+        <div class="hd-frame-body">
+          <div class="hd-timeline" style="font-size:12.5px;">
+            <div class="tl-row"><div class="tl-dot done">&#10003;</div><div class="tl-body"><div class="tl-title">Materials Delivered</div><div class="tl-sub">Monday</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Demolition</div><div class="tl-sub">Tuesday</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Floor Prep</div><div class="tl-sub">Wednesday</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Tile Install</div><div class="tl-sub">Thursday – Friday</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Vanity Install</div><div class="tl-sub">Following Monday</div></div></div>
+            <div class="tl-row"><div class="tl-dot pending">&#183;</div><div class="tl-body"><div class="tl-title">Final Inspection</div><div class="tl-sub">Following Wednesday</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hd-frame" style="margin-top:18px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Delayed Item Scenario</span></div>
+      <div class="hd-frame-body" id="delayScenario">
+        <button class="btn btn-outline" onclick="runDelayScenario()">Show Delayed-Item Scenario</button>
+        <div id="delaySteps" style="display:none;margin-top:14px;">
+          <p style="font-size:13px;color:var(--red);font-weight:700;margin:0 0 8px;">&#9888; Designer faucet delayed — new estimated arrival pushes past the vanity install date.</p>
+          <p style="font-size:13px;color:var(--ink);margin:0 0 8px;">Suggested substitute: <b>In-Stock Comparable Faucet</b> &middot; available for Monday delivery &middot; keeps the schedule on track.</p>
+          <p style="font-size:13px;color:var(--gray);margin:0 0 12px;">Revised delivery date if substitute is accepted: <b style="color:var(--navy);">Monday (on schedule)</b>. If declined, vanity install would move to the following Wednesday.</p>
+          <button class="btn btn-navy" onclick="hdBannerToast('notifyBanner')">Prepare Customer Notification for Approval</button>
+          <div class="confirm-banner" id="notifyBanner">&#10003; Notification prepared for Jordan Blake — awaiting customer approval before the substitute is applied.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Reconcile the Project</h3>
+    <p class="sub-lede">Purchase reconciliation for the Blake bathroom remodel, illustrative figures.</p>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Reconciliation Summary</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Estimated Material Cost</td><td class="num">$2,040.00</td></tr>
+            <tr><td>Actual Purchase Cost</td><td class="num">$1,985.00</td></tr>
+            <tr><td>Difference</td><td class="num"><span class="pill pill-green">Favorable $55.00</span></td></tr>
+            <tr><td>Approved Change Orders</td><td class="num">1 &middot; $492.25</td></tr>
+            <tr><td>Returned Materials</td><td class="num">2 items &middot; Pending</td></tr>
+            <tr><td>Refund Credits</td><td class="num">Illustrative &middot; Not Yet Applied</td></tr>
+            <tr><td>Final Labor Cost</td><td class="num">$2,220.00</td></tr>
+            <tr><td><b>Updated Contractor Margin</b></td><td class="num"><b>$1,420.00</b></td></tr>
+            <tr><td>Digital Receipt Attached</td><td class="num"><span class="pill pill-blue">Automatic</span></td></tr>
+            <tr><td>Pro Xtra Purchase Attributed</td><td class="num"><span class="pill pill-green">Yes</span></td></tr>
+            <tr><td><b>Project Profitability</b></td><td class="num"><b style="color:var(--green);">On Target</b></td></tr>
+          </table>
+        </div>
+        <p style="font-size:12.5px;color:var(--gray);margin-top:14px;">No manual receipt entry. Every purchase remains connected to the project.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Buy Again</h3>
+    <p class="sub-lede">Canterbury Home Services can reorder anything already purchased through QuickEstimate — no new customer proposal required.</p>
+    <div class="hd-tabs" id="buyAgainTabs">
+      <button class="hd-tab-btn active" data-tab="buyagain" onclick="setBuyTab('buyagain')">Buy Again</button>
+      <button class="hd-tab-btn" data-tab="recent" onclick="setBuyTab('recent')">Recent Purchases</button>
+      <button class="hd-tab-btn" data-tab="freq" onclick="setBuyTab('freq')">Frequently Purchased</button>
+      <button class="hd-tab-btn" data-tab="byproject" onclick="setBuyTab('byproject')">By Project</button>
+      <button class="hd-tab-btn" data-tab="essentials" onclick="setBuyTab('essentials')">Saved Essentials</button>
+    </div>
+    <div class="prod-grid" id="buyAgainGrid"></div>
+    <div class="hd-frame" style="margin-top:22px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Ask for What You Need</span></div>
+      <div class="hd-frame-body">
+        <div style="display:grid;gap:12px;">
+          <div class="hd-frame" style="background:var(--tint);">
+            <div class="hd-frame-body" style="padding:14px 16px;">
+              <p style="margin:0 0 8px;font-size:13px;color:var(--gray);">&#128172; &ldquo;Order two more boxes of the tile used for the Blake bathroom.&rdquo;</p>
+              <button class="btn btn-outline" onclick="runVoiceExample(1)">Run This Example</button>
+              <div class="confirm-banner" id="voiceEx1">&#10003; Matched to Porcelain Tile 12&quot; x 24&quot; from the Blake project &middot; 2 boxes added &middot; $116.00 &middot; ready for pickup or delivery.</div>
+            </div>
+          </div>
+          <div class="hd-frame" style="background:var(--tint);">
+            <div class="hd-frame-body" style="padding:14px 16px;">
+              <p style="margin:0 0 8px;font-size:13px;color:var(--gray);">&#128172; &ldquo;I need caulk, painter's tape and contractor bags for tomorrow.&rdquo;</p>
+              <button class="btn btn-outline" onclick="runVoiceExample(2)">Run This Example</button>
+              <div class="confirm-banner" id="voiceEx2">&#10003; 3 items matched from purchase history &middot; $35.73 &middot; scheduled for same-day pickup, ready tomorrow morning.</div>
+            </div>
+          </div>
+        </div>
+        <p class="illus-note" style="margin-top:14px;">Illustrative natural-language matching. The contractor reviews and confirms fulfillment before anything ships.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Purchase History</h3>
+    <p class="sub-lede">Complete purchase history for the Blake bathroom remodel.</p>
+    <div class="hd-tabs" id="historyTabs">
+      <button class="hd-tab-btn active" data-f="all" onclick="setHistFilter('all')">All</button>
+      <button class="hd-tab-btn" data-f="installed" onclick="setHistFilter('installed')">Installed</button>
+      <button class="hd-tab-btn" data-f="unused" onclick="setHistFilter('unused')">Unused</button>
+      <button class="hd-tab-btn" data-f="returned" onclick="setHistFilter('returned')">Returned</button>
+      <button class="hd-tab-btn" data-f="inventory" onclick="setHistFilter('inventory')">Kept in Inventory</button>
+      <button class="hd-tab-btn" data-f="reordered" onclick="setHistFilter('reordered')">Reordered</button>
+    </div>
+    <div class="hd-table-wrap">
+      <table class="hd-table">
+        <thead><tr><th>Product</th><th>Qty Purchased</th><th>Qty Used</th><th>Cost</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--gray);margin-top:14px;">No more searching through receipts or trying to remember which product was used.</p>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Change Orders</h3>
+    <p class="sub-lede">Jordan Blake requests 40 additional square feet of tile and two more bags of thinset.</p>
+    <div class="hd-frame">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Change Order Calculation</span></div>
+      <div class="hd-frame-body">
+        <div class="hd-table-wrap">
+          <table class="hd-table">
+            <tr><td>Additional Tile (3 boxes, ~40 sq ft)</td><td class="num">$174.00</td></tr>
+            <tr><td>Additional Thinset (2 bags)</td><td class="num">$33.50</td></tr>
+            <tr><td>Additional Material Subtotal</td><td class="num">$207.50</td></tr>
+            <tr><td>Additional Labor (40 sq ft)</td><td class="num">$240.00</td></tr>
+            <tr><td>Subtotal Before Markup</td><td class="num">$447.50</td></tr>
+            <tr><td>Contractor Markup (10%)</td><td class="num">$44.75</td></tr>
+            <tr><td><b>Change Order Total</b></td><td class="num"><b>$492.25</b></td></tr>
+          </table>
+        </div>
+        <div id="coPending" style="margin-top:16px;">
+          <button class="btn btn-navy" onclick="sendChangeOrder()">Send Change Order to Customer</button>
+        </div>
+        <div id="coSent" style="display:none;margin-top:16px;">
+          <p style="font-size:13px;color:var(--gray);margin:0 0 10px;">Change order sent to Jordan Blake for approval.</p>
+          <button class="btn btn-orange" onclick="approveChangeOrder()">Approve Change Order (Customer View)</button>
+        </div>
+        <div id="coApproved" style="display:none;margin-top:16px;">
+          <div class="confirm-banner show" style="position:static;">&#10003; Change approved. Additional materials are ready for contractor review.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 6 — RETURNS & VALUE (ADMIN) ============ -->
+<section class="tabpanel admin" data-tab="6">
+  <div class="tabpanel-kicker"><span class="tab-badge">6</span> Returns &amp; Value &middot; Pro Admin</div>
+  <h2>Close Out Materials. See the Bigger Picture.</h2>
+  <p class="lede">What's left over gets handled, inventory gets checked before buying more, and here's what it all adds up to.</p>
+  <button class="narration-btn" data-audio="6" onclick="toggleNarration(6, this)">
+    <span class="ico play-ico">&#9654;</span>
+    <span class="ico bars" style="display:none"><span></span><span></span><span></span></span>
+    <span class="label">Play narration</span>
+  </button>
+  <audio id="audio6" src="audio/tab6.mp3" preload="none"></audio>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Handle Unused Materials</h3>
+    <p class="sub-lede">Reconciling what's left over from the Blake bathroom remodel.</p>
+    <div class="hd-table-wrap">
+      <table class="hd-table" id="unusedTable">
+        <thead><tr><th>Item</th><th>Qty Remaining</th><th>Value</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Porcelain Tile 12&quot; x 24&quot;</td><td>3 boxes</td><td class="num">$174.00</td><td><span class="pill pill-gray" id="unusedTag0">Not Yet Marked</span></td></tr>
+          <tr><td>Modified Thinset Mortar</td><td>1 bag</td><td class="num">$16.75</td><td><span class="pill pill-gray" id="unusedTag1">Not Yet Marked</span></td></tr>
+          <tr><td>Sanded Grout</td><td>1 container</td><td class="num">$22.00</td><td><span class="pill pill-gray" id="unusedTag2">Not Yet Marked</span></td></tr>
+          <tr><td>Braided Supply Connectors</td><td>2 units</td><td class="num">$8.50</td><td><span class="pill pill-gray" id="unusedTag3">Not Yet Marked</span></td></tr>
+          <tr><td>Custom-Cut Tile Trim (non-returnable)</td><td>1 piece</td><td class="num">$0.00</td><td><span class="pill pill-gray" id="unusedTag4">Not Eligible for Return</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Prepare for Return')">Prepare for Return</button>
+      <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Kept in Inventory')">Keep in Inventory</button>
+      <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Transferred')">Transfer to Another Project</button>
+      <button class="btn btn-outline" style="padding:8px 14px;font-size:12.5px;" onclick="markUnused(-1,'Retained for Warranty')">Retain for Warranty</button>
+    </div>
+    <p class="illus-note">Select a row's item above, then choose an action — each of the four choices is available for every returnable item.</p>
+
+    <div class="hd-frame" style="margin-top:22px;">
+      <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Transfer Example — Blake &rarr; Carter Project</span></div>
+      <div class="hd-frame-body">
+        <p style="font-size:13px;color:var(--gray);margin:0 0 14px;">The Carter project (a separate customer) needs 4 boxes of the same tile. Canterbury Home Services already has 3 leftover boxes from the Blake project.</p>
+        <div class="stat-row">
+          <div class="stat-tile"><div class="k">Blake Project — Unused Tile Value</div><div class="v" id="blakeUnusedVal">$174.00</div></div>
+          <div class="stat-tile"><div class="k">Carter Project — Inventory Value</div><div class="v" id="carterInvVal">$0.00</div></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <button class="btn btn-navy" onclick="transferTile('buyone')">Transfer and Buy One</button>
+          <button class="btn btn-outline" onclick="transferTile('keep')">Keep in Inventory</button>
+          <button class="btn btn-outline" onclick="transferTile('return')">Prepare Return</button>
+        </div>
+        <div class="confirm-banner" id="transferBanner"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Prepare a Return</h3>
+    <p class="sub-lede">Preparing a return for two unopened items from the Blake bathroom remodel.</p>
+    <div class="two-col">
+      <div class="hd-frame">
+        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Assisted Return Process</span></div>
+        <div class="hd-frame-body">
+          <ol style="margin:0;padding-left:20px;font-size:12.5px;color:var(--gray);line-height:1.85;">
+            <li>Identify unused or returnable materials from the project</li>
+            <li>Match each item to its original purchase</li>
+            <li>Locate the digital receipt and PO reference</li>
+            <li>Confirm item condition (unopened, unused)</li>
+            <li>Check illustrative return eligibility</li>
+            <li>Identify likely return method (in-store, locker, mail)</li>
+            <li>Estimate an illustrative credit value</li>
+            <li>Prepare a return summary for contractor review</li>
+            <li>Contractor confirms items and quantities</li>
+            <li>Return summary handed off to Home Depot's return process</li>
+            <li>Project reconciliation updates once the return completes</li>
+          </ol>
+        </div>
+      </div>
+      <div class="hd-frame">
+        <div class="hd-frame-top"><span class="dot3"></span><span class="dot3"></span><span class="dot3"></span><span class="ftitle">Return Summary</span></div>
+        <div class="hd-frame-body">
+          <div id="returnPending">
+            <p style="font-size:13px;color:var(--gray);margin:0 0 14px;">2 unopened items identified: 1 container of sanded grout, 2 plumbing connectors.</p>
+            <button class="btn btn-orange" onclick="prepareReturn()">Prepare Return</button>
+          </div>
+          <div id="returnDone" style="display:none;">
+            <div class="hd-table-wrap">
+              <table class="hd-table">
+                <tr><td>Items</td><td class="num">2 Unopened Items</td></tr>
+                <tr><td>Matched Purchase</td><td class="num"><span class="pill pill-green">Found</span></td></tr>
+                <tr><td>Digital Receipt</td><td class="num"><span class="pill pill-green">Located</span></td></tr>
+                <tr><td>Illustrative Credit</td><td class="num">$30.50</td></tr>
+                <tr><td>Return Summary</td><td class="num"><span class="pill pill-blue">Prepared</span></td></tr>
+                <tr><td>Reconciliation</td><td class="num"><span class="pill pill-amber">Pending</span></td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="callout" style="margin-top:16px;">Return eligibility, method, value and acceptance would be determined by The Home Depot's applicable policies and systems.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Admin</div>
+    <h3>Check Pro Inventory</h3>
+    <p class="sub-lede">Canterbury Home Services' illustrative on-hand material inventory.</p>
+    <div class="hd-table-wrap">
+      <table class="hd-table">
+        <thead><tr><th>Item</th><th>Qty On Hand</th><th>Origin Project</th><th>Condition</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Porcelain Tile 12&quot; x 24&quot;</td><td>3 boxes</td><td>Blake Bathroom Remodel</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$174.00</td></tr>
+          <tr><td>Modified Thinset Mortar</td><td>1 bag</td><td>Blake Bathroom Remodel</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$16.75</td></tr>
+          <tr><td>Braided Supply Connectors</td><td>4 units</td><td>Multiple Projects</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$17.00</td></tr>
+          <tr><td>Screw &amp; Anchor Assortment</td><td>1 box</td><td>Multiple Projects</td><td><span class="pill pill-green">Unopened</span></td><td class="num">$9.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:16px;">You already have three boxes of the required tile in company inventory. QuickEstimate reduced the new order from four boxes to one.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+      <button class="btn btn-outline" onclick="hdBannerToast('invTransferBanner')">Transfer to New Project</button>
+      <button class="btn btn-navy" onclick="hdBannerToast('invBuyMoreBanner')">Buy More (1 Box)</button>
+    </div>
+    <div class="confirm-banner" id="invTransferBanner">&#10003; Tile transferred to the new project's material list.</div>
+    <div class="confirm-banner" id="invBuyMoreBanner">&#10003; 1 additional box added to the order — reduced from 4 boxes using existing inventory.</div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-kicker">Summary</div>
+    <h3>Final Value Summary</h3>
+    <p class="sub-lede">Home Depot helps the Pro price and fulfill the materials. QuickEstimate helps the Pro price and manage the entire job.</p>
+    <div class="value-cols">
+      <div class="value-col">
+        <div class="vc-tag">For the Pro</div>
+        <ul>
+          <li>One connected view of estimate, materials, purchasing, and job status</li>
+          <li>Less time spent shopping, reconciling receipts, and tracking down orders</li>
+          <li>Fewer pricing mistakes and forgotten costs eating into margin</li>
+          <li>Faster reordering and change orders without starting over</li>
+          <li>Clear visibility into what's owned, used, returned, or available</li>
+        </ul>
+      </div>
+      <div class="value-col">
+        <div class="vc-tag">For the Customer</div>
+        <ul>
+          <li>A clear, itemized proposal with real product detail, not vague line items</li>
+          <li>Confidence that pricing and materials are tied to an actual purchase plan</li>
+          <li>Faster answers when a delay or substitution comes up</li>
+          <li>Simple electronic approval for both the original scope and any changes</li>
+        </ul>
+      </div>
+      <div class="value-col">
+        <div class="vc-tag">For Home Depot</div>
+        <ul>
+          <li>Deeper Pro Xtra engagement across the life of a project, not just a single order</li>
+          <li>More attributed purchases, repeat purchases, and reorders</li>
+          <li>A stronger connection to the contractor's day-to-day workflow</li>
+          <li>A differentiated Pro experience built around the whole job, not just the cart</li>
+        </ul>
+      </div>
+    </div>
+    <div class="closing-statement">
+      QuickEstimate can connect the contractor's customer experience with Home Depot's Pro purchasing and fulfillment ecosystem.
+    </div>
+    <div class="cta-row2">
+      <button class="btn btn-orange" onclick="hdBannerToast('cta1Banner')">Integrate QuickEstimate with the Home Depot Pro ecosystem</button>
+      <button class="btn btn-outline" onclick="hdBannerToast('cta2Banner')">Explore QuickEstimate as a strategic product capability</button>
+    </div>
+    <div class="confirm-banner" id="cta1Banner" style="justify-content:center;">&#10003; Thank you for exploring this concept. This is illustrative only — no integration currently exists.</div>
+    <div class="confirm-banner" id="cta2Banner" style="justify-content:center;">&#10003; Thank you for your interest. This concept is a proposed direction, not a committed roadmap item.</div>
+    <p class="illus-note" style="text-align:center;">This concept demonstration does not represent pricing, valuations, confidential data, or any contractual terms between Principium Technology and The Home Depot.</p>
+  </div>
+</section>
+
 </div>
 
 <div class="footnote">
@@ -1040,141 +1169,65 @@ button { font-family: inherit; }
 </div>
 
 <script>
-/* ================= SCENE ENGINE ================= */
-const TOTAL_SCENES = 18; // 0..17
-let current = 0;
-let autoplayOn = false;
-let muted = false;
-let autoTimer = null;
-
-function loadPrefs() {
-  try {
-    muted = sessionStorage.getItem('hd_muted') === '1';
-  } catch (e) { muted = false; }
-}
-function savePrefs() {
-  try { sessionStorage.setItem('hd_muted', muted ? '1' : '0'); } catch (e) {}
-}
-
-const progressEl = document.getElementById('hdProgress');
-for (let i = 0; i <= 17; i++) {
-  const dot = document.createElement('button');
-  dot.className = 'hd-dot';
-  dot.textContent = i + 1;
-  dot.setAttribute('role', 'tab');
-  dot.setAttribute('aria-label', 'Go to step ' + (i + 1));
-  dot.addEventListener('click', () => showScene(i));
-  dot.dataset.index = i;
-  progressEl.appendChild(dot);
-}
-
-function updateProgressUI() {
-  document.querySelectorAll('.hd-dot').forEach(d => {
-    const idx = Number(d.dataset.index);
-    d.classList.toggle('active', idx === current);
-    d.classList.toggle('done', idx < current);
+/* ================= TAB ENGINE ================= */
+function showTab(n) {
+  document.querySelectorAll('.tabpanel').forEach(p => {
+    p.classList.toggle('active', Number(p.dataset.tab) === n);
   });
-  document.getElementById('stepCount').textContent = 'Step ' + (current + 1) + ' of ' + TOTAL_SCENES;
-  document.getElementById('prevBtn').disabled = current === 0;
-  document.getElementById('nextBtn').innerHTML = current === TOTAL_SCENES - 1 ? '<span class="lbl">Restart</span> &#8635;' : '<span class="lbl">Next</span> &rarr;';
-}
-
-function showScene(n) {
-  current = Math.max(0, Math.min(TOTAL_SCENES - 1, n));
-  document.querySelectorAll('.scene').forEach(s => {
-    s.classList.toggle('active', Number(s.dataset.scene) === current);
+  document.querySelectorAll('.hd-maintab-btn').forEach(b => {
+    b.classList.toggle('active', Number(b.dataset.tab) === n);
   });
-  updateProgressUI();
+  stopAllNarration(0);
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  speakCurrentScene();
-  if (autoplayOn) scheduleAutoAdvance();
 }
 
-function hdGo(dir) {
-  if (current === TOTAL_SCENES - 1 && dir === 1) { showScene(0); return; }
-  showScene(current + dir);
+/* ---- narration (pre-recorded audio, same pattern as interactive/) ---- */
+const NARR_TOTAL = 6;
+function resetNarrationButton(n) {
+  const btn = document.querySelector('.narration-btn[data-audio="' + n + '"]');
+  if (!btn) return;
+  btn.classList.remove('playing');
+  btn.querySelector('.play-ico').style.display = '';
+  btn.querySelector('.bars').style.display = 'none';
+  btn.querySelector('.label').textContent = 'Play narration';
 }
-
-/* ---- keyboard navigation ---- */
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  if (e.key === 'ArrowRight') hdGo(1);
-  else if (e.key === 'ArrowLeft') hdGo(-1);
-  else if (e.key === ' ') { e.preventDefault(); toggleMute(); }
-});
-
-/* ---- narration / captions via Web Speech API ---- */
-let currentUtterance = null;
-function speakCurrentScene() {
-  window.speechSynthesis && window.speechSynthesis.cancel();
-  clearTimeout(autoTimer);
-  const scene = document.querySelector('.scene.active');
-  const text = scene ? scene.dataset.caption : '';
-  const capBar = document.getElementById('captionBar');
-  const capText = document.getElementById('capText');
-  if (!text) { capBar.classList.remove('show'); return; }
-  capText.textContent = text;
-  capBar.classList.add('show');
-  if (muted || !('speechSynthesis' in window)) {
-    capBar.classList.remove('speaking');
-    if (autoplayOn) scheduleAutoAdvance(text);
-    return;
-  }
-  try {
-    currentUtterance = new SpeechSynthesisUtterance(text);
-    currentUtterance.rate = 1.0;
-    currentUtterance.pitch = 1.0;
-    currentUtterance.onstart = () => capBar.classList.add('speaking');
-    currentUtterance.onend = () => {
-      capBar.classList.remove('speaking');
-      if (autoplayOn) scheduleAutoAdvance();
-    };
-    currentUtterance.onerror = () => {
-      capBar.classList.remove('speaking');
-      if (autoplayOn) scheduleAutoAdvance(text);
-    };
-    window.speechSynthesis.speak(currentUtterance);
-  } catch (e) {
-    if (autoplayOn) scheduleAutoAdvance(text);
+function stopAllNarration(exceptN) {
+  for (let i = 1; i <= NARR_TOTAL; i++) {
+    if (i === exceptN) continue;
+    const audio = document.getElementById('audio' + i);
+    if (audio && !audio.paused) audio.pause();
+    resetNarrationButton(i);
   }
 }
-
-function scheduleAutoAdvance(fallbackText) {
-  clearTimeout(autoTimer);
-  const delay = fallbackText ? Math.max(4500, fallbackText.length * 55) : 900;
-  autoTimer = setTimeout(() => { if (autoplayOn) hdGo(1); }, delay);
+function toggleNarration(n, btn) {
+  const audio = document.getElementById('audio' + n);
+  if (!audio) return;
+  if (audio.paused) {
+    stopAllNarration(n);
+    audio.play();
+    btn.classList.add('playing');
+    btn.querySelector('.play-ico').style.display = 'none';
+    btn.querySelector('.bars').style.display = '';
+    btn.querySelector('.label').textContent = 'Playing…';
+  } else {
+    audio.pause();
+    resetNarrationButton(n);
+  }
+}
+for (let i = 1; i <= NARR_TOTAL; i++) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('audio' + i);
+    if (audio) audio.addEventListener('ended', () => resetNarrationButton(i));
+  });
 }
 
-function hideCaptions() {
-  document.getElementById('captionBar').classList.remove('show');
-  window.speechSynthesis && window.speechSynthesis.cancel();
-}
-
-function toggleAutoplay() {
-  autoplayOn = !autoplayOn;
-  const btn = document.getElementById('autoBtn');
-  btn.classList.toggle('on', autoplayOn);
-  btn.innerHTML = autoplayOn ? '&#10073;&#10073; <span class="lbl">Pause Auto-Play</span>' : '&#9654; <span class="lbl">Auto-Play</span>';
-  if (autoplayOn) { speakCurrentScene(); }
-  else { clearTimeout(autoTimer); window.speechSynthesis && window.speechSynthesis.cancel(); }
-}
-
-function toggleMute() {
-  muted = !muted;
-  savePrefs();
-  const btn = document.getElementById('muteBtn');
-  btn.innerHTML = muted ? '&#128263; <span class="lbl">Sound Off</span>' : '&#128266; <span class="lbl">Sound On</span>';
-  if (muted) { window.speechSynthesis && window.speechSynthesis.cancel(); document.getElementById('captionBar').classList.remove('speaking'); }
-  else { speakCurrentScene(); }
-}
-
-/* ================= SCENE 2: PRO XTRA ================= */
+/* ================= TAB 1: PRO XTRA ================= */
 function connectProXtra() {
   document.getElementById('proDisconnected').style.display = 'none';
   document.getElementById('proConnected').style.display = 'block';
 }
 
-/* ================= SCENE 3: MATERIALS ================= */
+/* ================= TAB 2: MATERIALS ================= */
 const materialsData = [
   { req: "Floor tile (110 sq ft)", product: "Porcelain Tile 12\" x 24\"", reqQty: "110 sq ft", buyQty: "9 boxes", unit: 58.00, ext: 522.00, store: "Midtown Atlanta", storeType: "green", fulfill: "Delivery", removable: true },
   { req: "Cement backer board", product: "1/2\" Cement Backer Board", reqQty: "8 sheets", buyQty: "8 sheets", unit: 14.50, ext: 116.00, store: "Midtown Atlanta", storeType: "green", fulfill: "Pickup", removable: true },
@@ -1190,9 +1243,7 @@ const materialsData = [
   { req: "Contractor trash bags", product: "Contractor Trash Bags, 42-Gal (20-ct)", reqQty: "1 box", buyQty: "1 box", unit: 19.99, ext: 19.99, store: "Midtown Atlanta", storeType: "green", fulfill: "Pickup", removable: true }
 ];
 let materialsRemoved = new Set();
-
 function fmtMoney(n) { return '$' + n.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); }
-
 function renderMaterials() {
   const tbody = document.getElementById('materialsBody');
   if (!tbody) return;
@@ -1231,7 +1282,7 @@ function flashConfirm(id) {
 }
 function hdBannerToast(id) { flashConfirm(id); }
 
-/* ================= SCENE 4: GOOD/BETTER/BEST ================= */
+/* ================= TAB 2: GOOD/BETTER/BEST ================= */
 const gbbData = {
   good:   { name: "Good — Value",         price: 5890, mat: 1720, margin: 5890-1720-2220-410, avail: "In Stock" },
   better: { name: "Better — Recommended", price: 6225, mat: 2040, margin: 6225-2040-2220-410, avail: "In Stock" },
@@ -1249,12 +1300,29 @@ function selectGBB(tier) {
   availEl.style.color = d.avail === "In Stock" ? "var(--green)" : "var(--amber)";
 }
 
-/* ================= SCENE 6: FULFILLMENT ================= */
+/* ================= TAB 3: FULFILLMENT ================= */
 function selectFulfill(opt) {
   document.querySelectorAll('#fulfillGrid .hd-choice-card').forEach(c => c.classList.toggle('selected', c.dataset.opt === opt));
 }
 
-/* ================= SCENE 7: PROPOSAL & E-SIGNATURE ================= */
+/* ================= TAB 3: ORDER REVIEW ================= */
+function placeOrder() {
+  document.getElementById('orderPending').style.display = 'none';
+  document.getElementById('orderPlaced').style.display = 'block';
+}
+
+/* ================= TAB 3: PAYMENT TO HOME DEPOT (NEW) ================= */
+function selectPayMethod(opt) {
+  document.querySelectorAll('#payMethodGrid .hd-choice-card').forEach(c => c.classList.toggle('selected', c.dataset.pay === opt));
+  const labels = { proxtra: 'Pro Xtra Business Card', creditline: 'Home Depot Commercial Credit', ach: 'ACH / Bank Transfer' };
+  document.getElementById('payMethodLabel').textContent = labels[opt];
+}
+function payHomeDepot() {
+  document.getElementById('payPending').style.display = 'none';
+  document.getElementById('payDone').style.display = 'block';
+}
+
+/* ================= TAB 4: PROPOSAL & E-SIGNATURE ================= */
 function selectProposalTier(tier) {
   document.querySelectorAll('#propGrid .gbb-card').forEach(c => c.classList.toggle('selected', c.dataset.tier === tier));
   const d = gbbData[tier];
@@ -1266,18 +1334,23 @@ function signProposal() {
   document.getElementById('propSigned').style.display = 'block';
 }
 
-/* ================= SCENE 8: ORDER REVIEW ================= */
-function placeOrder() {
-  document.getElementById('orderPending').style.display = 'none';
-  document.getElementById('orderPlaced').style.display = 'block';
+/* ================= TAB 4: INVOICE & CUSTOMER PAYMENT (NEW) ================= */
+function sendInvoice() {
+  document.getElementById('invPending').style.display = 'none';
+  document.getElementById('invSent').style.display = 'block';
+}
+function recordCustomerPayment() {
+  document.getElementById('custPayPending').style.display = 'none';
+  document.getElementById('custPayDone').style.display = 'block';
+  document.getElementById('custPayStatus').innerHTML = '<span class="pill pill-green">Paid</span>';
 }
 
-/* ================= SCENE 9: DELIVERY & TRACKING ================= */
+/* ================= TAB 5: DELIVERY & TRACKING ================= */
 function runDelayScenario() {
   document.getElementById('delaySteps').style.display = 'block';
 }
 
-/* ================= SCENE 11: BUY AGAIN ================= */
+/* ================= TAB 5: BUY AGAIN ================= */
 const buyAgainData = [
   { name: "Contractor Trash Bags, 42-Gal (20-ct)", meta: "Last used: Blake Bathroom Remodel", price: 19.99, tabs: ["buyagain","recent","freq","essentials"] },
   { name: "Painter's Tape, 1.88\"", meta: "Last used: Blake Bathroom Remodel", price: 8.49, tabs: ["buyagain","recent","freq","essentials"] },
@@ -1328,7 +1401,7 @@ function setBuyTab(tab) {
 }
 function runVoiceExample(n) { flashConfirm('voiceEx' + n); }
 
-/* ================= SCENE 12: PURCHASE HISTORY ================= */
+/* ================= TAB 5: PURCHASE HISTORY ================= */
 const historyData = [
   { name: "Porcelain Tile 12\" x 24\"", qtyP: "9 boxes", qtyU: "8 boxes", cost: 522.00, status: "installed", date: "Aug 31" },
   { name: "Cement Backer Board", qtyP: "8 sheets", qtyU: "8 sheets", cost: 116.00, status: "installed", date: "Aug 31" },
@@ -1358,7 +1431,7 @@ function setHistFilter(f) {
   renderHistory(f);
 }
 
-/* ================= SCENE 13: CHANGE ORDER ================= */
+/* ================= TAB 5: CHANGE ORDER ================= */
 function sendChangeOrder() {
   document.getElementById('coPending').style.display = 'none';
   document.getElementById('coSent').style.display = 'block';
@@ -1368,7 +1441,7 @@ function approveChangeOrder() {
   document.getElementById('coApproved').style.display = 'block';
 }
 
-/* ================= SCENE 14: UNUSED MATERIALS ================= */
+/* ================= TAB 6: UNUSED MATERIALS ================= */
 function markUnused(rowIndex, label) {
   document.querySelectorAll('[id^="unusedTag"]').forEach(el => {
     el.textContent = label;
@@ -1385,22 +1458,20 @@ function transferTile(action) {
     banner.textContent = '✓ Tile kept in Canterbury Home Services’ shared inventory for future projects.';
   } else if (action === 'return') {
     blakeUnused = 0.00;
-    banner.textContent = '✓ Return prepared for the leftover tile — see Step 15 for the assisted return workflow.';
+    banner.textContent = '✓ Return prepared for the leftover tile — see Prepare a Return for the assisted return workflow.';
   }
   document.getElementById('blakeUnusedVal').textContent = fmtMoney(Math.max(0, blakeUnused));
   document.getElementById('carterInvVal').textContent = fmtMoney(carterInv);
   flashConfirm('transferBanner');
 }
 
-/* ================= SCENE 15: PREPARE RETURN ================= */
+/* ================= TAB 6: PREPARE RETURN ================= */
 function prepareReturn() {
   document.getElementById('returnPending').style.display = 'none';
   document.getElementById('returnDone').style.display = 'block';
 }
 
-loadPrefs();
-document.getElementById('muteBtn').innerHTML = muted ? '&#128263; <span class="lbl">Sound Off</span>' : '&#128266; <span class="lbl">Sound On</span>';
-updateProgressUI();
+/* ---- init ---- */
 renderMaterials();
 renderBuyAgain();
 renderHistory('all');
